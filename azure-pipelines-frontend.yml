@@ -1,11 +1,10 @@
-# ── Frontend Pipeline ─────────────────────────────────────────────
+# ── Pokédex 2.0 Frontend Pipeline ────────────────────────────────
 # File: azure-pipelines-frontend.yml
-# Place at: /pokedex-frontend/azure-pipelines-frontend.yml
-# 
-# Triggers:
-#   - develop branch  → deploys to STAGING environment
-#   - main branch     → deploys to PRODUCTION environment
-# ──────────────────────────────────────────────────────────────────
+# Place at: repo ROOT (same level as pokedex-frontend folder)
+#
+# develop branch → Staging
+# main branch    → Production
+# ─────────────────────────────────────────────────────────────────
 
 trigger:
   branches:
@@ -15,11 +14,13 @@ trigger:
   paths:
     include:
       - pokedex-frontend/**
+      - azure-pipelines-frontend.yml
 
 pool:
   vmImage: ubuntu-latest
 
 variables:
+  - group: pokedex-secrets
   - name: VITE_APP_VERSION
     value: '2.0.0'
   - name: nodeVersion
@@ -32,11 +33,11 @@ stages:
   displayName: '🔨 Build React App'
   jobs:
   - job: BuildJob
-    displayName: 'Build & Test'
+    displayName: 'Install, Build & Publish Artifact'
     steps:
 
     - task: NodeTool@0
-      displayName: 'Install Node.js $(nodeVersion)'
+      displayName: 'Use Node.js $(nodeVersion)'
       inputs:
         versionSpec: $(nodeVersion)
 
@@ -48,18 +49,18 @@ stages:
     - script: |
         cd pokedex-frontend
         npm run build
-      displayName: '⚙️ Build Vite app'
+      displayName: '⚙️  Vite build'
       env:
         VITE_APP_VERSION: $(VITE_APP_VERSION)
 
     - task: PublishBuildArtifacts@1
-      displayName: '📤 Publish dist artifact'
+      displayName: '📤 Upload dist artifact'
       inputs:
         PathtoPublish: 'pokedex-frontend/dist'
         ArtifactName: 'frontend-dist'
         publishLocation: 'Container'
 
-# ── Stage 2: Deploy to Staging (develop branch) ─────────────────
+# ── Stage 2: Deploy Staging (develop branch) ────────────────────
 - stage: DeployStaging
   displayName: '🚧 Deploy → Staging'
   dependsOn: Build
@@ -73,6 +74,7 @@ stages:
         deploy:
           steps:
           - task: DownloadBuildArtifacts@1
+            displayName: '📥 Download artifact'
             inputs:
               buildType: 'current'
               downloadType: 'single'
@@ -87,7 +89,7 @@ stages:
               skip_app_build: true
               deployment_environment: 'staging'
 
-# ── Stage 3: Deploy to Production (main branch) ─────────────────
+# ── Stage 3: Deploy Production (main branch) ────────────────────
 - stage: DeployProduction
   displayName: '🌟 Deploy → Production'
   dependsOn: Build
@@ -101,6 +103,7 @@ stages:
         deploy:
           steps:
           - task: DownloadBuildArtifacts@1
+            displayName: '📥 Download artifact'
             inputs:
               buildType: 'current'
               downloadType: 'single'
