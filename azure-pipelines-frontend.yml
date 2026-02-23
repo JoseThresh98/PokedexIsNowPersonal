@@ -1,0 +1,115 @@
+# ── Frontend Pipeline ─────────────────────────────────────────────
+# File: azure-pipelines-frontend.yml
+# Place at: /pokedex-frontend/azure-pipelines-frontend.yml
+# 
+# Triggers:
+#   - develop branch  → deploys to STAGING environment
+#   - main branch     → deploys to PRODUCTION environment
+# ──────────────────────────────────────────────────────────────────
+
+trigger:
+  branches:
+    include:
+      - main
+      - develop
+  paths:
+    include:
+      - pokedex-frontend/**
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  - name: VITE_APP_VERSION
+    value: '2.0.0'
+  - name: nodeVersion
+    value: '20.x'
+
+stages:
+
+# ── Stage 1: Build ───────────────────────────────────────────────
+- stage: Build
+  displayName: '🔨 Build React App'
+  jobs:
+  - job: BuildJob
+    displayName: 'Build & Test'
+    steps:
+
+    - task: NodeTool@0
+      displayName: 'Install Node.js $(nodeVersion)'
+      inputs:
+        versionSpec: $(nodeVersion)
+
+    - script: |
+        cd pokedex-frontend
+        npm ci
+      displayName: '📦 Install dependencies'
+
+    - script: |
+        cd pokedex-frontend
+        npm run build
+      displayName: '⚙️ Build Vite app'
+      env:
+        VITE_APP_VERSION: $(VITE_APP_VERSION)
+
+    - task: PublishBuildArtifacts@1
+      displayName: '📤 Publish dist artifact'
+      inputs:
+        PathtoPublish: 'pokedex-frontend/dist'
+        ArtifactName: 'frontend-dist'
+        publishLocation: 'Container'
+
+# ── Stage 2: Deploy to Staging (develop branch) ─────────────────
+- stage: DeployStaging
+  displayName: '🚧 Deploy → Staging'
+  dependsOn: Build
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))
+  jobs:
+  - deployment: DeployStaging
+    displayName: 'Deploy to Staging'
+    environment: 'pokedex-staging'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: DownloadBuildArtifacts@1
+            inputs:
+              buildType: 'current'
+              downloadType: 'single'
+              artifactName: 'frontend-dist'
+              downloadPath: '$(System.ArtifactsDirectory)'
+
+          - task: AzureStaticWebApp@0
+            displayName: '🚀 Deploy to Azure Static Web Apps (Staging)'
+            inputs:
+              azure_static_web_apps_api_token: $(AZURE_STATIC_WEB_APPS_API_TOKEN_STAGING)
+              app_location: '$(System.ArtifactsDirectory)/frontend-dist'
+              skip_app_build: true
+              deployment_environment: 'staging'
+
+# ── Stage 3: Deploy to Production (main branch) ─────────────────
+- stage: DeployProduction
+  displayName: '🌟 Deploy → Production'
+  dependsOn: Build
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+  jobs:
+  - deployment: DeployProduction
+    displayName: 'Deploy to Production'
+    environment: 'pokedex-production'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: DownloadBuildArtifacts@1
+            inputs:
+              buildType: 'current'
+              downloadType: 'single'
+              artifactName: 'frontend-dist'
+              downloadPath: '$(System.ArtifactsDirectory)'
+
+          - task: AzureStaticWebApp@0
+            displayName: '🚀 Deploy to Azure Static Web Apps (Production)'
+            inputs:
+              azure_static_web_apps_api_token: $(AZURE_STATIC_WEB_APPS_API_TOKEN_PRODUCTION)
+              app_location: '$(System.ArtifactsDirectory)/frontend-dist'
+              skip_app_build: true
