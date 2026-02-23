@@ -1,0 +1,100 @@
+name: 🚀 Deploy Pokédex 2.0
+
+on:
+  push:
+    branches:
+      - main        # → Production
+      - develop     # → Staging
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+    branches:
+      - main
+
+jobs:
+
+  # ── Build & Deploy Production (main branch) ──────────────────
+  build_and_deploy_production:
+    name: 🌟 Build & Deploy → Production
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: pokedex-frontend/package-lock.json
+
+      - name: Install dependencies
+        run: |
+          cd pokedex-frontend
+          npm ci
+
+      - name: Build Vite app
+        run: |
+          cd pokedex-frontend
+          npm run build
+        env:
+          VITE_APP_VERSION: '2.0.0'
+
+      - name: Deploy to Azure Static Web Apps (Production)
+        uses: Azure/static-web-apps-deploy@v1
+        with:
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_PRODUCTION }}
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          action: upload
+          app_location: 'pokedex-frontend/dist'
+          skip_app_build: true
+
+  # ── Build & Deploy Staging (develop branch) ──────────────────
+  build_and_deploy_staging:
+    name: 🚧 Build & Deploy → Staging
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/develop' && github.event_name == 'push'
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: pokedex-frontend/package-lock.json
+
+      - name: Install dependencies
+        run: |
+          cd pokedex-frontend
+          npm ci
+
+      - name: Build Vite app
+        run: |
+          cd pokedex-frontend
+          npm run build
+        env:
+          VITE_APP_VERSION: '2.0.0'
+
+      - name: Deploy to Azure Static Web Apps (Staging)
+        uses: Azure/static-web-apps-deploy@v1
+        with:
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_STAGING }}
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          action: upload
+          app_location: 'pokedex-frontend/dist'
+          skip_app_build: true
+          deployment_environment: staging
+
+  # ── Close PR preview environment ─────────────────────────────
+  close_pull_request:
+    name: 🗑️ Close Staging PR Preview
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request' && github.event.action == 'closed'
+    steps:
+      - name: Close staging environment
+        uses: Azure/static-web-apps-deploy@v1
+        with:
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_STAGING }}
+          action: close
