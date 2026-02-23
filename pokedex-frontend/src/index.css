@@ -1,0 +1,164 @@
+﻿@import "tailwindcss";
+
+* {
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+    /* ── Reset & base ─────────────────────────── */
+    *, *::before, *::after {
+        box-sizing: border-box;
+        user-select: none;
+        -webkit-user-select: none;
+    }
+
+input, textarea {
+    user-select: text;
+    -webkit-user-select: text;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background-color: #080b10;
+    color: white;
+    min-height: 100vh;
+}
+
+/* ── FULL PAGE PARALLAX BACKGROUND ───────── */
+#parallax-bg,
+#parallax-mid,
+#parallax-fg {
+    position: fixed;
+    inset: -6%;
+    width: 112%;
+    height: 112%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    will-change: transform;
+    transition: transform 0.14s ease-out;
+    pointer-events: none;
+}
+
+#parallax-bg {
+    background-image: url('/layer_bg.webp');
+    z-index: 0;
+}
+
+#parallax-mid {
+    background-image: url('/layer_mid.webp');
+    z-index: 1;
+}
+
+#parallax-fg {
+    background-image: url('/layer_fg.webp');
+    z-index: 2;
+}
+
+#parallax-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(8, 11, 16, 0.74);
+    z-index: 3;
+    pointer-events: none;
+}
+
+#root {
+    position: relative;
+    z-index: 4;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+main {
+    flex: 1;
+}
+
+/* ── Animations ──────────────────────────── */
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.4;
+    }
+}
+
+/* ── Scrollbar ───────────────────────────── */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: #111;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #cc2020;
+    border-radius: 3px;
+}
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: #a81a1a;
+    }
+
+/* ── Mobile ──────────────────────────────── */
+@media (max-width: 480px) {
+    .pokemon-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 0.6rem !important;
+    }
+}
+
+@media (max-width: 640px) {
+    .tab-bar {
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .trainer-card {
+        flex-direction: column !important;
+        align-items: center !important;
+        text-align: center !important;
+    }
+
+    .search-row {
+        flex-direction: column !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+
+    .card-grid {
+        grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)) !important;
+        gap: 0.7rem !important;
+    }
+
+    .route-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)) !important;
+    }
+}
+
+/* ── Focus ───────────────────────────────── */
+button:focus-visible, a:focus-visible, input:focus-visible {
+    outline: 2px solid #cc2020;
+    outline-offset: 2px;
+}
+
+button, a {
+    transition: all 0.18s ease;
+}
