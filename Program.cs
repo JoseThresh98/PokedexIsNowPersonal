@@ -29,13 +29,24 @@ builder.Services.AddCors(options =>
     });
 });
 
-var app = builder.Build();
+//var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
+//if (app.Environment.IsDevelopment())
+//{
+//    app.UseSwagger();
+//    app.UseSwaggerUI();
+//}
+
+
+//Esto se tiene que ir al estar en desarrollo
+var port = Environment.GetEnvironmentVariable("PORT") ?? "10000";
+
+builder.WebHost.ConfigureKestrel(options =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+    options.ListenAnyIP(int.Parse(port));
+});
+
+var app = builder.Build();
 
 app.UseHttpsRedirection();
 app.UseCors("AllowReactApp");
