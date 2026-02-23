@@ -1,0 +1,130 @@
+# ── Backend Pipeline ──────────────────────────────────────────────
+# File: azure-pipelines-backend.yml
+# Place at: /pokedex-api/azure-pipelines-backend.yml
+#
+# Triggers:
+#   - develop branch → deploys to STAGING App Service slot
+#   - main branch    → deploys to PRODUCTION App Service
+# ──────────────────────────────────────────────────────────────────
+
+trigger:
+  branches:
+    include:
+      - main
+      - develop
+  paths:
+    include:
+      - pokedex-api/**
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  - name: dotnetVersion
+    value: '8.0.x'
+  - name: buildConfiguration
+    value: 'Release'
+  - name: azureSubscription
+    value: 'Azure Subscription 1'           # ← must match your service connection name
+  - name: appServiceNameProduction
+    value: 'pokedex-api-prod'               # ← your App Service name in Azure
+  - name: appServiceNameStaging
+    value: 'pokedex-api-staging'            # ← staging App Service name
+  - name: resourceGroup
+    value: 'pokedex-rg'                     # ← your resource group name
+
+stages:
+
+# ── Stage 1: Build & Test ────────────────────────────────────────
+- stage: Build
+  displayName: '🔨 Build .NET API'
+  jobs:
+  - job: BuildJob
+    displayName: 'Build, Test & Publish'
+    steps:
+
+    - task: UseDotNet@2
+      displayName: 'Install .NET $(dotnetVersion)'
+      inputs:
+        packageType: sdk
+        version: $(dotnetVersion)
+
+    - script: |
+        cd pokedex-api
+        dotnet restore
+      displayName: '📦 Restore NuGet packages'
+
+    - script: |
+        cd pokedex-api
+        dotnet build --configuration $(buildConfiguration) --no-restore
+      displayName: '⚙️ Build solution'
+
+    - script: |
+        cd pokedex-api
+        dotnet publish --configuration $(buildConfiguration) --no-build --output $(Build.ArtifactStagingDirectory)/api
+      displayName: '📦 Publish API'
+
+    - task: PublishBuildArtifacts@1
+      displayName: '📤 Upload artifact'
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)/api'
+        ArtifactName: 'backend-api'
+        publishLocation: 'Container'
+
+# ── Stage 2: Deploy Staging (develop) ───────────────────────────
+- stage: DeployStaging
+  displayName: '🚧 Deploy → Staging'
+  dependsOn: Build
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))
+  jobs:
+  - deployment: DeployStaging
+    displayName: 'Deploy API to Staging'
+    environment: 'pokedex-api-staging'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: DownloadBuildArtifacts@1
+            inputs:
+              buildType: 'current'
+              downloadType: 'single'
+              artifactName: 'backend-api'
+              downloadPath: '$(System.ArtifactsDirectory)'
+
+          - task: AzureWebApp@1
+            displayName: '🚀 Deploy to Staging App Service'
+            inputs:
+              azureSubscription: $(azureSubscription)
+              appType: webAppLinux
+              appName: $(appServiceNameStaging)
+              package: '$(System.ArtifactsDirectory)/backend-api'
+              runtimeStack: 'DOTNETCORE|8.0'
+
+# ── Stage 3: Deploy Production (main) ───────────────────────────
+- stage: DeployProduction
+  displayName: '🌟 Deploy → Production'
+  dependsOn: Build
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+  jobs:
+  - deployment: DeployProduction
+    displayName: 'Deploy API to Production'
+    environment: 'pokedex-production'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: DownloadBuildArtifacts@1
+            inputs:
+              buildType: 'current'
+              downloadType: 'single'
+              artifactName: 'backend-api'
+              downloadPath: '$(System.ArtifactsDirectory)'
+
+          - task: AzureWebApp@1
+            displayName: '🚀 Deploy to Production App Service'
+            inputs:
+              azureSubscription: $(azureSubscription)
+              appType: webAppLinux
+              appName: $(appServiceNameProduction)
+              package: '$(System.ArtifactsDirectory)/backend-api'
+              runtimeStack: 'DOTNETCORE|8.0'
