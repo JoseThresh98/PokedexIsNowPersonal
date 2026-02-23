@@ -21,6 +21,10 @@ export async function getPokemonDetail(nameOrId) {
             data.sprites?.other?.['official-artwork']?.front_default ??
             data.sprites?.front_default ??
             null,
+        shinyImageUrl:
+            data.sprites?.other?.['official-artwork']?.front_shiny ??
+            data.sprites?.front_shiny ??
+            null,
         types: data.types.map(t => t.type.name),
         abilities: data.abilities.map(a => ({
             name: a.ability.name,
