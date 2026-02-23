@@ -1,13 +1,6 @@
 // ── Pokémon Service ───────────────────────────────────────────────
-// ─────────────────────────────────────────────────────────────────
 
 const POKEAPI = 'https://pokeapi.co/api/v2'
-
-// Helper to extract ID from a PokéAPI URL
-function getIdFromUrl(url) {
-  const parts = url.replace(/\/$/, '').split('/')
-  return parts[parts.length - 1]
-}
 
 // ── Pokemon List ─────────────────────────────────────────────────
 export async function getPokemonList(limit = 20, offset = 0) {
@@ -21,7 +14,6 @@ export async function getPokemonDetail(nameOrId) {
   const response = await fetch(`${POKEAPI}/pokemon/${nameOrId}`)
   if (!response.ok) throw new Error(`Pokémon not found: ${nameOrId}`)
   const data = await response.json()
-
   return {
     id: data.id,
     name: data.name,
@@ -46,31 +38,33 @@ export async function getPokemonDetail(nameOrId) {
   }
 }
 
-// ── Ability Detail ───────────────────────────────────────────────
+// ── Abilities ────────────────────────────────────────────────────
+export async function getAbilityList(limit = 20, offset = 0) {
+  const response = await fetch(`${POKEAPI}/ability?limit=${limit}&offset=${offset}`)
+  if (!response.ok) throw new Error('Failed to fetch abilities list')
+  return response.json()
+}
+// alias
+export const getAbilitiesList = getAbilityList
+
 export async function getAbilityDetail(nameOrId) {
   const response = await fetch(`${POKEAPI}/ability/${nameOrId}`)
   if (!response.ok) throw new Error(`Ability not found: ${nameOrId}`)
   return response.json()
 }
 
-// ── Abilities List ───────────────────────────────────────────────
-export async function getAbilitiesList(limit = 20, offset = 0) {
-  const response = await fetch(`${POKEAPI}/ability?limit=${limit}&offset=${offset}`)
-  if (!response.ok) throw new Error('Failed to fetch abilities list')
-  return response.json()
-}
-
-// ── Type Detail ──────────────────────────────────────────────────
-export async function getTypeDetail(nameOrId) {
-  const response = await fetch(`${POKEAPI}/type/${nameOrId}`)
-  if (!response.ok) throw new Error(`Type not found: ${nameOrId}`)
-  return response.json()
-}
-
-// ── Types List ───────────────────────────────────────────────────
+// ── Types ────────────────────────────────────────────────────────
 export async function getTypesList() {
   const response = await fetch(`${POKEAPI}/type?limit=100`)
   if (!response.ok) throw new Error('Failed to fetch types list')
+  return response.json()
+}
+// alias
+export const getTypeList = getTypesList
+
+export async function getTypeDetail(nameOrId) {
+  const response = await fetch(`${POKEAPI}/type/${nameOrId}`)
+  if (!response.ok) throw new Error(`Type not found: ${nameOrId}`)
   return response.json()
 }
 
@@ -87,14 +81,13 @@ export async function getLocationArea(nameOrId) {
   return response.json()
 }
 
-// ── Pokemon Species (for evolution chain) ────────────────────────
+// ── Species & Evolution ──────────────────────────────────────────
 export async function getPokemonSpecies(nameOrId) {
   const response = await fetch(`${POKEAPI}/pokemon-species/${nameOrId}`)
   if (!response.ok) throw new Error(`Species not found: ${nameOrId}`)
   return response.json()
 }
 
-// ── Evolution Chain ──────────────────────────────────────────────
 export async function getEvolutionChain(url) {
   const response = await fetch(url)
   if (!response.ok) throw new Error('Failed to fetch evolution chain')
