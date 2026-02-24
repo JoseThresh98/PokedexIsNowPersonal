@@ -209,6 +209,37 @@
         champion: { name: 'Leon', notes: "Undefeated champion known throughout Galar — Hop's older brother", sprite: 'leon' },
         legendaries: ['zacian', 'zamazenta', 'eternatus', 'kubfu', 'urshifu', 'zarude', 'regieleki', 'regidrago', 'glastrier', 'spectrier', 'calyrex'],
     },
+    hisui: {
+        game: 'Pokémon Legends: Arceus',
+        generation: 'Generation VIII (Legends)',
+        mapImage: 'https://archives.bulbagarden.net/media/upload/thumb/3/3e/Hisui_Map.png/400px-Hisui_Map.png',
+        description: 'Hisui is the ancient form of the Sinnoh region, set in a feudal era of Japan. As a Survey Corps member, you must catch and study Pokémon to complete the first-ever Pokédex.',
+        rivals: [
+            { name: 'Rei / Akari', notes: 'Your counterpart — the player character you did not choose' },
+            { name: 'Volo', notes: 'A Pokémon trader from the Ginkgo Guild with mysterious motives' },
+        ],
+        gyms: [
+            { city: 'Grandtree Arena', leader: 'Kleavor (Noble)', type: 'Bug / Rock', badge: 'Obsidian Fieldlands' },
+            { city: 'Brava Arena', leader: 'Lilligant (Noble)', type: 'Grass / Fighting', badge: 'Crimson Mirelands' },
+            { city: 'Moonview Arena', leader: 'Arcanine (Noble)', type: 'Fire', badge: 'Cobalt Coastlands' },
+            { city: 'Diamond Heath', leader: 'Electrode (Noble)', type: 'Electric / Grass', badge: 'Coronet Highlands' },
+            { city: 'Snowpoint Temple', leader: 'Avalugg (Noble)', type: 'Ice', badge: 'Alabaster Icelands' },
+        ],
+        eliteFour: [
+            { name: 'Irida', type: 'Ice' },
+            { name: 'Adaman', type: 'Grass' },
+            { name: 'Kamado', type: 'Normal' },
+            { name: 'Volo', type: 'Mixed' },
+        ],
+        champion: { name: 'Arceus', notes: 'The creator Pokémon — the ultimate challenge at the end of the game' },
+        legendaries: [
+            'enamorus', 'landorus', 'thundurus', 'tornadus',
+            'dialga', 'palkia', 'giratina',
+            'uxie', 'mesprit', 'azelf',
+            'regigigas', 'heatran', 'cresselia',
+            'shaymin', 'darkrai', 'arceus',
+        ],
+    },
     paldea: {
         game: 'Scarlet / Violet',
         generation: 'Generation IX',
@@ -238,6 +269,7 @@
         champion: { name: 'Geeta', notes: 'Chairwoman of the Pokémon League and top champion', sprite: 'geeta' },
         legendaries: ['wo-chien', 'chien-pao', 'ting-lu', 'chi-yu', 'koraidon', 'miraidon', 'ogerpon', 'terapagos', 'pecharunt'],
     },
+
 }
 
 export const regionColors = {
