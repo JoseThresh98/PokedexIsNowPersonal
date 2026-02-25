@@ -37,30 +37,27 @@ function PokedexPage() {
         return results.filter(Boolean)
     }, [])
 
-    // Fetch current page slice — all setState inside async fn, never synchronously
+    // Fetch on page OR search change
     useEffect(() => {
         if (allNames.length === 0) return
         let cancelled = false
 
-        const run = async () => {
-            setLoading(true)
-            window.scrollTo({ top: 0, behavior: 'smooth' })
-            const names = search.trim()
-                ? allNames.filter(n => n.includes(search.toLowerCase().trim()))
-                : allNames
-            const start = (page - 1) * PAGE_SIZE
-            const details = await fetchSlice(names.slice(start, start + PAGE_SIZE))
+        const names = search.trim()
+            ? allNames.filter(n => n.includes(search.toLowerCase().trim()))
+            : allNames
+
+        const start = (page - 1) * PAGE_SIZE
+        fetchSlice(names.slice(start, start + PAGE_SIZE)).then(details => {
             if (!cancelled) {
                 setDisplayed(details)
                 setLoading(false)
+                window.scrollTo({ top: 0, behavior: 'smooth' })
             }
-        }
+        })
 
-        run()
         return () => { cancelled = true }
-    }, [page, allNames]) // search excluded intentionally — page resets via handleSearch
+    }, [page, search, allNames, fetchSlice])
 
-    // Resetting page lives in the event handler, not an effect
     const handleSearch = (value) => {
         setSearch(value)
         setPage(1)
@@ -102,16 +99,15 @@ function PokedexPage() {
     })
 
     return (
-        <div style={{ maxWidth: '960px', margin: '0 auto', padding: '2rem 1rem 4rem' }}>
+        <div style={{ maxWidth: '960px', margin: '0 auto', padding: '2.5rem 1rem 4rem' }}>
 
-            {/* ── Shared PageHeader — same as all other pages ── */}
             <PageHeader
-                title="Pokédex"
                 icon="📖"
-                subtitle={allNames.length > 0 ? `${filteredNames.length.toLocaleString()} Pokémon` : 'Loading...'}
-                search={search}
+                title="Pokédex"
+                subtitle={allNames.length > 0 ? `${filteredNames.length.toLocaleString()} Pokémon` : undefined}
+                searchValue={search}
                 onSearch={handleSearch}
-                placeholder="Search by name..."
+                searchPlaceholder="Search by name..."
             />
 
             {/* ── Grid ── */}
@@ -136,7 +132,6 @@ function PokedexPage() {
                         ))}
                     </div>
 
-                    {/* ── Pagination ── */}
                     {totalPages > 1 && (
                         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.75rem', marginTop: '2.5rem' }}>
                             <p style={{ color: 'rgba(255,255,255,0.45)', fontSize: '0.8rem', margin: 0 }}>

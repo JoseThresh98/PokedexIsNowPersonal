@@ -52,6 +52,44 @@ function TrainerCard({ name, children, color }) {
 }
 
 // Some Pokémon only have sprites on their form endpoint, not the base endpoint
+// Maps rival names → Pokémon Showdown trainer sprite filenames
+const RIVAL_SPRITES = {
+    // Kanto
+    'blue': 'blue.png',
+    // Johto
+    'silver': 'silver.png',
+    // Hoenn
+    'brendan': 'brendan.png',
+    'may': 'may.png',
+    // Sinnoh
+    'barry': 'barry.png',
+    // Unova
+    'cheren': 'cheren.png',
+    'bianca': 'bianca.png',
+    'n': 'n.png',
+    // Kalos
+    'serena': 'serena.png',
+    'calem': 'calem.png',
+    'shauna': 'shauna.png',
+    'tierno': 'tierno.png',
+    'trevor': 'trevor.png',
+    // Alola
+    'hau': 'hau.png',
+    'gladion': 'gladion.png',
+    // Galar
+    'hop': 'hop.png',
+    'bede': 'bede.png',
+    'marnie': 'marnie.png',
+    // Paldea
+    'nemona': 'nemona.png',
+    'arven': 'arven.png',
+    'penny': 'penny.png',
+    // Hisui
+    'rei': 'rei.png',
+    'akari': 'akari.png',
+    'volo': 'volo.png',
+}
+
 const FORM_OVERRIDES = {
     'giratina': 'giratina-altered',
     'shaymin': 'shaymin-land',
@@ -75,6 +113,26 @@ const FORM_OVERRIDES = {
     'urshifu': 'urshifu-single-strike',
     'calyrex': 'calyrex',
     'enamorus': 'enamorus-incarnate',
+    // Hoenn
+    'deoxys': 'deoxys-normal',
+    // Alola
+    'necrozma': 'necrozma',
+    'tapu-koko': 'tapu-koko',
+    'tapu-lele': 'tapu-lele',
+    'tapu-bulu': 'tapu-bulu',
+    'tapu-fini': 'tapu-fini',
+    'hoopa': 'hoopa',
+    // Galar
+    'zacian': 'zacian',
+    'zamazenta': 'zamazenta',
+    'kubfu': 'kubfu',
+    // Paldea
+    'wo-chien': 'wo-chien',
+    'chien-pao': 'chien-pao',
+    'ting-lu': 'ting-lu',
+    'chi-yu': 'chi-yu',
+    'ogerpon': 'ogerpon-teal',
+    'terapagos': 'terapagos-normal',
 }
 
 // Legendary Pokémon card with sprite fetched from PokéAPI
@@ -225,9 +283,18 @@ function RegionDetailPage() {
 
     return (
         <div style={{ maxWidth: '900px', margin: '2rem auto', padding: '0 1rem 4rem' }}>
-            <Link to="/regions" style={{ color: '#9ca3af', textDecoration: 'none', fontSize: '0.9rem' }}>
+            <button
+                onClick={() => window.history.back()}
+                style={{
+                    backgroundColor: 'rgba(0,0,0,0.4)', border: '2px solid rgba(255,255,255,0.15)',
+                    color: 'rgba(255,255,255,0.7)', borderRadius: '0.75rem',
+                    padding: '0.45rem 1rem', cursor: 'pointer', fontWeight: '600',
+                    fontSize: '0.85rem', marginBottom: '1.5rem', display: 'flex',
+                    alignItems: 'center', gap: '0.4rem',
+                }}
+            >
                 ← Back to Regions
-            </Link>
+            </button>
 
             {/* Hero */}
             <div style={{
@@ -297,12 +364,26 @@ function RegionDetailPage() {
                                 <div>
                                     <h3 style={{ color: 'white', fontWeight: 'bold', marginBottom: '0.75rem' }}>⚔️ Rivals</h3>
                                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                                        {data.rivals.map(r => (
-                                            <div key={r.name} style={{ backgroundColor: '#374151', borderRadius: '1rem', padding: '0.75rem 1rem', display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.5rem' }}>
-                                                <span style={{ color: 'white', fontWeight: 'bold' }}>{r.name}</span>
-                                                <span style={{ color: '#9ca3af', fontSize: '0.85rem' }}>{r.notes}</span>
-                                            </div>
-                                        ))}
+                                        {data.rivals.map(r => {
+                                            const rivalSprite = RIVAL_SPRITES[r.name.toLowerCase().replace(/[^a-z]/g, '')]
+                                                || RIVAL_SPRITES[r.name.toLowerCase().split(' ')[0]]
+                                            return (
+                                                <div key={r.name} style={{ backgroundColor: '#374151', borderRadius: '1rem', padding: '0.75rem 1rem', display: 'flex', alignItems: 'center', gap: '0.85rem', flexWrap: 'wrap' }}>
+                                                    {rivalSprite && (
+                                                        <img
+                                                            src={`https://play.pokemonshowdown.com/sprites/trainers/${rivalSprite}`}
+                                                            alt={r.name}
+                                                            style={{ width: '48px', height: '48px', objectFit: 'contain', imageRendering: 'pixelated', flexShrink: 0 }}
+                                                            onError={e => e.target.style.display = 'none'}
+                                                        />
+                                                    )}
+                                                    <div style={{ flex: 1 }}>
+                                                        <span style={{ color: 'white', fontWeight: 'bold', display: 'block' }}>{r.name}</span>
+                                                        <span style={{ color: '#9ca3af', fontSize: '0.85rem' }}>{r.notes}</span>
+                                                    </div>
+                                                </div>
+                                            )
+                                        })}
                                     </div>
                                 </div>
                             )}
@@ -319,38 +400,41 @@ function RegionDetailPage() {
                             )}
                             {!loadingLocations && (
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                                    {locations.length === 0 && <p style={{ color: '#6b7280', textAlign: 'center', padding: '2rem' }}>No route data available for this region.</p>}
-                                    {locations.map(loc => (
-                                        <div key={loc.name} style={{ backgroundColor: '#374151', borderRadius: '1rem', overflow: 'hidden' }}>
-                                            <button onClick={() => handleLocationClick(loc)} style={{
-                                                width: '100%', padding: '0.85rem 1rem', backgroundColor: 'transparent',
-                                                border: 'none', color: 'white', fontWeight: '600', textAlign: 'left',
-                                                cursor: 'pointer', display: 'flex', justifyContent: 'space-between',
-                                                alignItems: 'center', textTransform: 'capitalize', fontSize: '0.9rem',
-                                            }}>
-                                                <span>📍 {loc.name.replace(/-/g, ' ')}</span>
-                                                <span style={{ color: '#9ca3af' }}>{expandedLocation === loc.name ? '▲' : '▼'}</span>
-                                            </button>
-                                            {expandedLocation === loc.name && (
-                                                <div style={{ padding: '0.75rem 1rem 1rem', borderTop: '1px solid #4b5563' }}>
-                                                    {loadingPokemon && !locationPokemon[loc.name] && <p style={{ color: '#9ca3af', fontSize: '0.85rem' }}>Loading Pokémon...</p>}
-                                                    {locationPokemon[loc.name]?.length === 0 && <p style={{ color: '#6b7280', fontSize: '0.85rem' }}>No wild Pokémon data.</p>}
-                                                    {locationPokemon[loc.name]?.length > 0 && (
-                                                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem' }}>
-                                                            {locationPokemon[loc.name].map(pName => (
-                                                                <Link key={pName} to={`/pokemon/${pName}`} style={{ textDecoration: 'none' }}>
-                                                                    <span style={{
-                                                                        backgroundColor: '#1f2937', color: 'white', padding: '0.25rem 0.65rem',
-                                                                        borderRadius: '9999px', fontSize: '0.8rem', textTransform: 'capitalize',
-                                                                        border: `1px solid ${color}`, cursor: 'pointer', display: 'inline-block',
-                                                                    }}>{pName.replace(/-/g, ' ')}</span>
-                                                                </Link>
-                                                            ))}
-                                                        </div>
-                                                    )}
+                                    {locations.length === 0 && (
+                                        <p style={{ color: '#6b7280', textAlign: 'center', padding: '2rem' }}>No route data available for this region.</p>
+                                    )}
+                                    {locations.map((loc, i) => (
+                                        <Link
+                                            key={loc.name}
+                                            to={`/regions/${name}/routes/${loc.name}`}
+                                            style={{ textDecoration: 'none' }}
+                                        >
+                                            <div
+                                                style={{
+                                                    backgroundColor: '#374151', borderRadius: '1rem',
+                                                    padding: '0.9rem 1.1rem',
+                                                    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                                                    border: '2px solid transparent', transition: 'all 0.18s',
+                                                }}
+                                                onMouseEnter={e => { e.currentTarget.style.borderColor = color; e.currentTarget.style.backgroundColor = '#3f4b5e' }}
+                                                onMouseLeave={e => { e.currentTarget.style.borderColor = 'transparent'; e.currentTarget.style.backgroundColor = '#374151' }}
+                                            >
+                                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                                                    <span style={{
+                                                        backgroundColor: color + '30', color: color,
+                                                        border: `1px solid ${color}60`, borderRadius: '0.5rem',
+                                                        padding: '0.2rem 0.5rem', fontSize: '0.7rem',
+                                                        fontWeight: '700', minWidth: '32px', textAlign: 'center',
+                                                    }}>
+                                                        {String(i + 1).padStart(2, '0')}
+                                                    </span>
+                                                    <span style={{ color: 'white', fontWeight: '600', fontSize: '0.9rem', textTransform: 'capitalize' }}>
+                                                        📍 {loc.name.replace(/-/g, ' ')}
+                                                    </span>
                                                 </div>
-                                            )}
-                                        </div>
+                                                <span style={{ color: color, fontSize: '0.85rem', fontWeight: '700' }}>View →</span>
+                                            </div>
+                                        </Link>
                                     ))}
                                 </div>
                             )}
