@@ -61,6 +61,10 @@ export async function getPokemonDetail(nameOrId) {
             data.sprites?.other?.['official-artwork']?.front_default ??
             data.sprites?.front_default ??
             null,
+        shinyImageUrl:
+            data.sprites?.other?.['official-artwork']?.front_shiny ??
+            data.sprites?.front_shiny ??
+            null,
         types: data.types.map(t => t.type.name),
         abilities: data.abilities.map(a => ({
             name: a.ability.name,
@@ -172,7 +176,7 @@ export async function getPokedexByRegion(nameOrId) {
     return response.json()
 }
 
-// ── Items ─────
+// ── Items ─────────────────────────────────────────────────────────
 export async function getItemList(limit = 2200, offset = 0) {
     const response = await fetch(`${POKEAPI}/item?limit=${limit}&offset=${offset}`)
     if (!response.ok) throw new Error('Failed to fetch item list')
