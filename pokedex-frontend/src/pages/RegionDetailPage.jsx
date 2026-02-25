@@ -52,6 +52,44 @@ function TrainerCard({ name, children, color }) {
 }
 
 // Some Pokémon only have sprites on their form endpoint, not the base endpoint
+// Maps rival names → Pokémon Showdown trainer sprite filenames
+const RIVAL_SPRITES = {
+    // Kanto
+    'blue': 'blue.png',
+    // Johto
+    'silver': 'silver.png',
+    // Hoenn
+    'brendan': 'brendan.png',
+    'may': 'may.png',
+    // Sinnoh
+    'barry': 'barry.png',
+    // Unova
+    'cheren': 'cheren.png',
+    'bianca': 'bianca.png',
+    'n': 'n.png',
+    // Kalos
+    'serena': 'serena.png',
+    'calem': 'calem.png',
+    'shauna': 'shauna.png',
+    'tierno': 'tierno.png',
+    'trevor': 'trevor.png',
+    // Alola
+    'hau': 'hau.png',
+    'gladion': 'gladion.png',
+    // Galar
+    'hop': 'hop.png',
+    'bede': 'bede.png',
+    'marnie': 'marnie.png',
+    // Paldea
+    'nemona': 'nemona.png',
+    'arven': 'arven.png',
+    'penny': 'penny.png',
+    // Hisui
+    'rei': 'rei.png',
+    'akari': 'akari.png',
+    'volo': 'volo.png',
+}
+
 const FORM_OVERRIDES = {
     'giratina': 'giratina-altered',
     'shaymin': 'shaymin-land',
@@ -75,6 +113,26 @@ const FORM_OVERRIDES = {
     'urshifu': 'urshifu-single-strike',
     'calyrex': 'calyrex',
     'enamorus': 'enamorus-incarnate',
+    // Hoenn
+    'deoxys': 'deoxys-normal',
+    // Alola
+    'necrozma': 'necrozma',
+    'tapu-koko': 'tapu-koko',
+    'tapu-lele': 'tapu-lele',
+    'tapu-bulu': 'tapu-bulu',
+    'tapu-fini': 'tapu-fini',
+    'hoopa': 'hoopa',
+    // Galar
+    'zacian': 'zacian',
+    'zamazenta': 'zamazenta',
+    'kubfu': 'kubfu',
+    // Paldea
+    'wo-chien': 'wo-chien',
+    'chien-pao': 'chien-pao',
+    'ting-lu': 'ting-lu',
+    'chi-yu': 'chi-yu',
+    'ogerpon': 'ogerpon-teal',
+    'terapagos': 'terapagos-normal',
 }
 
 // Legendary Pokémon card with sprite fetched from PokéAPI
@@ -297,12 +355,26 @@ function RegionDetailPage() {
                                 <div>
                                     <h3 style={{ color: 'white', fontWeight: 'bold', marginBottom: '0.75rem' }}>⚔️ Rivals</h3>
                                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                                        {data.rivals.map(r => (
-                                            <div key={r.name} style={{ backgroundColor: '#374151', borderRadius: '1rem', padding: '0.75rem 1rem', display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.5rem' }}>
-                                                <span style={{ color: 'white', fontWeight: 'bold' }}>{r.name}</span>
-                                                <span style={{ color: '#9ca3af', fontSize: '0.85rem' }}>{r.notes}</span>
-                                            </div>
-                                        ))}
+                                        {data.rivals.map(r => {
+                                            const rivalSprite = RIVAL_SPRITES[r.name.toLowerCase().replace(/[^a-z]/g, '')]
+                                                || RIVAL_SPRITES[r.name.toLowerCase().split(' ')[0]]
+                                            return (
+                                                <div key={r.name} style={{ backgroundColor: '#374151', borderRadius: '1rem', padding: '0.75rem 1rem', display: 'flex', alignItems: 'center', gap: '0.85rem', flexWrap: 'wrap' }}>
+                                                    {rivalSprite && (
+                                                        <img
+                                                            src={`https://play.pokemonshowdown.com/sprites/trainers/${rivalSprite}`}
+                                                            alt={r.name}
+                                                            style={{ width: '48px', height: '48px', objectFit: 'contain', imageRendering: 'pixelated', flexShrink: 0 }}
+                                                            onError={e => e.target.style.display = 'none'}
+                                                        />
+                                                    )}
+                                                    <div style={{ flex: 1 }}>
+                                                        <span style={{ color: 'white', fontWeight: 'bold', display: 'block' }}>{r.name}</span>
+                                                        <span style={{ color: '#9ca3af', fontSize: '0.85rem' }}>{r.notes}</span>
+                                                    </div>
+                                                </div>
+                                            )
+                                        })}
                                     </div>
                                 </div>
                             )}

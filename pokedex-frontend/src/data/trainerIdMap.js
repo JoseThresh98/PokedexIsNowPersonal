@@ -125,4 +125,26 @@ export const nameToTrainerId = {
     'Tate & Liza': 'tate_liza',
     // Paldea Larry E4 (same sprite as gym, different key)
     'Larry (E4)': 'larry_e4',
+
+    // Alola Captains
+    'Ilima': 'ilima',
+    'Ilima (Captain)': 'ilima',
+    'Lana': 'lana',
+    'Lana (Captain)': 'lana',
+    'Kiawe': 'kiawe',
+    'Kiawe (Captain)': 'kiawe',
+    'Mallow': 'mallow',
+    'Mallow (Captain)': 'mallow',
+    'Sophocles': 'sophocles',
+    'Sophocles (Captain)': 'sophocles',
+    'Acerola (Captain)': 'acerola_captain',
+    'Mina': 'mina',
+    'Mina (Captain)': 'mina',
+    // Alola Elite Four + Champion
+    'Hala': 'hala',
+    'Olivia': 'olivia',
+    'Acerola': 'acerola',
+    'Kahili': 'kahili',
+    'Professor Kukui': 'kukui',
+    'Kukui': 'kukui',
 }

@@ -1,5 +1,5 @@
 ﻿// Trainer sprites from Pokémon Showdown
-const SPRITE_BASE = 'https://play.pokemonshowdown.com/sprites/trainers'
+const SPRITE_BASE = '/sprites/trainers'
 
 export const trainerData = {
     // ── KANTO ─────────────────────────────────
@@ -1178,6 +1178,139 @@ export const trainerData = {
             { name: 'oricorio', level: 60 },
             { name: 'altaria', level: 60 },
             { name: 'flamigo', level: 61 },
+        ],
+    },
+
+    // ── ALOLA ─────────────────────────────────────────────
+    // Captains (Trial Captains replace Gym Leaders in Alola)
+    ilima: {
+        name: 'Ilima', region: 'alola', role: 'Trial Captain',
+        city: 'Verdant Cavern', type: 'Normal', badge: 'Normalium Z',
+        sprite: `${SPRITE_BASE}/ilima.png`,
+        quote: 'I will show you the power of a true captain! The best of Normal-type moves await you!',
+        team: [
+            { name: 'yungoos', level: 11 },
+            { name: 'smeargle', level: 12 },
+        ],
+    },
+    lana: {
+        name: 'Lana', region: 'alola', role: 'Trial Captain',
+        city: 'Brooklet Hill', type: 'Water', badge: 'Waterium Z',
+        sprite: `${SPRITE_BASE}/lana.png`,
+        quote: 'I never lie. And right now I\'m seriously going to battle you!',
+        team: [
+            { name: 'wishiwashi', level: 20 },
+        ],
+    },
+    kiawe: {
+        name: 'Kiawe', region: 'alola', role: 'Trial Captain',
+        city: 'Wela Volcano', type: 'Fire', badge: 'Firium Z',
+        sprite: `${SPRITE_BASE}/kiawe.png`,
+        quote: 'The fire in my heart burns with the passion of my ancestors\' traditional dances!',
+        team: [
+            { name: 'marowak', level: 22 },
+            { name: 'salazzle', level: 22 },
+        ],
+    },
+    mallow: {
+        name: 'Mallow', region: 'alola', role: 'Trial Captain',
+        city: 'Lush Jungle', type: 'Grass', badge: 'Grassium Z',
+        sprite: `${SPRITE_BASE}/mallow.png`,
+        quote: 'The secret ingredient? That\'s for me to know! Now taste the power of my cooking!',
+        team: [
+            { name: 'shiinotic', level: 24 },
+            { name: 'lurantis', level: 24 },
+        ],
+    },
+    sophocles: {
+        name: 'Sophocles', region: 'alola', role: 'Trial Captain',
+        city: 'Hokulani Observatory', type: 'Electric', badge: 'Electrium Z',
+        sprite: `${SPRITE_BASE}/sophocles.png`,
+        quote: 'My machines are the best in Alola! Let\'s see if you can handle my electric trials!',
+        team: [
+            { name: 'vikavolt', level: 29 },
+            { name: 'togedemaru', level: 29 },
+        ],
+    },
+    acerola_captain: {
+        name: 'Acerola', region: 'alola', role: 'Trial Captain',
+        city: 'Thrifty Megamart', type: 'Ghost', badge: 'Ghostium Z',
+        sprite: `${SPRITE_BASE}/acerola.png`,
+        quote: 'This abandoned megamart is perfect for ghost-type trials! Don\'t let them spook you!',
+        team: [
+            { name: 'mimikyu', level: 33 },
+        ],
+    },
+    mina: {
+        name: 'Mina', region: 'alola', role: 'Trial Captain',
+        city: 'Vast Poni Canyon', type: 'Fairy', badge: 'Fairium Z',
+        sprite: `${SPRITE_BASE}/mina.png`,
+        quote: 'I was so caught up in my art that I nearly forgot to build my trial... but here we are!',
+        team: [
+            { name: 'ribombee', level: 50 },
+        ],
+    },
+
+    // Elite Four
+    hala: {
+        name: 'Hala', region: 'alola', role: 'Elite Four',
+        type: 'Fighting', sprite: `${SPRITE_BASE}/hala.png`,
+        quote: 'The power of the fist is not about destruction — it is about justice! Face my Fighting-types!',
+        team: [
+            { name: 'hariyama', level: 54 },
+            { name: 'poliwrath', level: 54 },
+            { name: 'crabominable', level: 54 },
+            { name: 'bewear', level: 55 },
+            { name: 'primeape', level: 54 },
+        ],
+    },
+    olivia: {
+        name: 'Olivia', region: 'alola', role: 'Elite Four',
+        type: 'Rock', sprite: `${SPRITE_BASE}/olivia.png`,
+        quote: 'My Rock-types are as solid as the earth beneath your feet. Don\'t think you can crack them easily!',
+        team: [
+            { name: 'carbink', level: 54 },
+            { name: 'relicanth', level: 54 },
+            { name: 'golem-alola', level: 55 },
+            { name: 'probopass', level: 54 },
+            { name: 'lycanroc', level: 55 },
+        ],
+    },
+    acerola: {
+        name: 'Acerola', region: 'alola', role: 'Elite Four',
+        type: 'Ghost', sprite: `${SPRITE_BASE}/acerola.png`,
+        quote: 'Ghosts are so playful and mysterious! Let me show you just how tricky they can be!',
+        team: [
+            { name: 'sableye', level: 54 },
+            { name: 'banette', level: 54 },
+            { name: 'dhelmise', level: 55 },
+            { name: 'drifblim', level: 54 },
+            { name: 'palossand', level: 56 },
+        ],
+    },
+    kahili: {
+        name: 'Kahili', region: 'alola', role: 'Elite Four',
+        type: 'Flying', sprite: `${SPRITE_BASE}/kahili.png`,
+        quote: 'My Flying-types soar above all challenges. Don\'t think you can ground them so easily!',
+        team: [
+            { name: 'crobat', level: 54 },
+            { name: 'oricorio', level: 54 },
+            { name: 'skarmory', level: 54 },
+            { name: 'mandibuzz', level: 54 },
+            { name: 'toucannon', level: 57 },
+        ],
+    },
+    kukui: {
+        name: 'Professor Kukui', region: 'alola', role: 'Champion',
+        type: 'Mixed', sprite: `${SPRITE_BASE}/kukui.png`,
+        quote: 'You\'ve made it all the way here — you\'ve become the very first Champion of Alola! But first, you\'ll have to get past me!',
+        team: [
+            { name: 'lycanroc', level: 57 },
+            { name: 'ninetales-alola', level: 56 },
+            { name: 'braviary', level: 56 },
+            { name: 'magnezone', level: 56 },
+            { name: 'snorlax', level: 56 },
+            { name: 'incineroar', level: 58 },
         ],
     },
 
