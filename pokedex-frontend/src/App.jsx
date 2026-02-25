@@ -14,6 +14,9 @@ import RegionDetailPage from './pages/RegionDetailPage'
 import RouteDetailPage from './pages/RouteDetailPage'
 import RarityPage from './pages/RarityPage'
 import TrainerDetailPage from './pages/TrainerDetailPage'
+import ItemsPage from './pages/ItemsPage'
+import ItemDetailPage from './pages/ItemDetailPage'
+
 
 function App() {
     // Inject parallax layers into <body> and track mouse
@@ -76,6 +79,8 @@ function App() {
                     <Route path="/regions/:regionName/routes/:routeName" element={<RouteDetailPage />} />
                     <Route path="/rarity" element={<RarityPage />} />
                     <Route path="/trainer/:trainerId" element={<TrainerDetailPage />} />
+                    <Route path="/items" element={<ItemsPage />} />
+                    <Route path="/items/:name" element={<ItemDetailPage />} />
                 </Routes>
             </main>
             <Footer />

@@ -158,9 +158,18 @@ function PokemonDetailPage() {
         <div style={{ maxWidth: '560px', margin: '0 auto', padding: '1.5rem 1rem 4rem' }}>
 
             {/* Back button */}
-            <Link to="/pokedex" style={{ color: '#9ca3af', textDecoration: 'none', fontSize: '0.9rem', display: 'inline-block', marginBottom: '1rem' }}>
-                ← Back to Pokédex
-            </Link>
+            <button
+                onClick={() => window.history.back()}
+                style={{
+                    backgroundColor: 'rgba(0,0,0,0.4)', border: '2px solid rgba(255,255,255,0.15)',
+                    color: 'rgba(255,255,255,0.7)', borderRadius: '0.75rem',
+                    padding: '0.45rem 1rem', cursor: 'pointer', fontWeight: '600',
+                    fontSize: '0.85rem', marginBottom: '1.5rem', display: 'flex',
+                    alignItems: 'center', gap: '0.4rem',
+                }}
+            >
+                ← Back to Pokedex
+            </button>
 
             {/* ════════════════════════════════════════
           POKÉDEX HERO CARD

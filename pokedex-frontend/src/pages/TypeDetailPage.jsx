@@ -60,9 +60,18 @@ function TypeDetailPage() {
     return (
         <div style={{ maxWidth: '900px', margin: '2rem auto', padding: '0 1rem' }}>
 
-            <Link to="/types" style={{ color: '#9ca3af', textDecoration: 'none', fontSize: '0.9rem' }}>
+            <button
+                onClick={() => window.history.back()}
+                style={{
+                    backgroundColor: 'rgba(0,0,0,0.4)', border: '2px solid rgba(255,255,255,0.15)',
+                    color: 'rgba(255,255,255,0.7)', borderRadius: '0.75rem',
+                    padding: '0.45rem 1rem', cursor: 'pointer', fontWeight: '600',
+                    fontSize: '0.85rem', marginBottom: '1.5rem', display: 'flex',
+                    alignItems: 'center', gap: '0.4rem',
+                }}
+            >
                 ← Back to Types
-            </Link>
+            </button>
 
             {/* Hero */}
             <div style={{ backgroundColor: bgColor, borderRadius: '2rem', padding: '2rem', margin: '1rem 0', display: 'flex', alignItems: 'center', gap: '1.5rem' }}>

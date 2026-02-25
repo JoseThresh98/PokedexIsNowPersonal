@@ -13,6 +13,7 @@ const navLinks = [
     { path: '/types', label: 'Types', icon: '🔥' },
     { path: '/regions', label: 'Regions', icon: '🌍' },
     { path: '/rarity', label: 'Rarity', icon: '🌟' },
+    { path: '/items', label: 'Items', icon: '🎒' },
 ]
 
 function Navbar() {

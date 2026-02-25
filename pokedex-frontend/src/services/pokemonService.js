@@ -171,3 +171,22 @@ export async function getPokedexByRegion(nameOrId) {
     if (!response.ok) throw new Error(`Pokédex not found: ${nameOrId}`)
     return response.json()
 }
+
+// ── Items ─────
+export async function getItemList(limit = 2200, offset = 0) {
+    const response = await fetch(`${POKEAPI}/item?limit=${limit}&offset=${offset}`)
+    if (!response.ok) throw new Error('Failed to fetch item list')
+    return response.json()
+}
+
+export async function getItemDetail(nameOrId) {
+    const response = await fetch(`${POKEAPI}/item/${nameOrId}`)
+    if (!response.ok) throw new Error(`Item not found: ${nameOrId}`)
+    return response.json()
+}
+
+export async function getItemCategoryList() {
+    const response = await fetch(`${POKEAPI}/item-category?limit=100`)
+    if (!response.ok) throw new Error('Failed to fetch item categories')
+    return response.json()
+}

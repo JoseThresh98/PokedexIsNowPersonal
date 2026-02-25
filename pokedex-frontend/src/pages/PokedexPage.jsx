@@ -46,27 +46,21 @@ function PokedexPage() {
             ? allNames.filter(n => n.includes(search.toLowerCase().trim()))
             : allNames
 
-        setLoading(true)
-        window.scrollTo({ top: 0, behavior: 'smooth' })
-
         const start = (page - 1) * PAGE_SIZE
         fetchSlice(names.slice(start, start + PAGE_SIZE)).then(details => {
             if (!cancelled) {
                 setDisplayed(details)
                 setLoading(false)
+                window.scrollTo({ top: 0, behavior: 'smooth' })
             }
         })
 
         return () => { cancelled = true }
-    }, [page, search, allNames, fetchSlice]) // search IS a dep — page reset handled below
-
-    // When search changes, reset to page 1
-    useEffect(() => {
-        setPage(1)
-    }, [search])
+    }, [page, search, allNames, fetchSlice])
 
     const handleSearch = (value) => {
         setSearch(value)
+        setPage(1)
     }
 
     const filteredNames = search.trim()
