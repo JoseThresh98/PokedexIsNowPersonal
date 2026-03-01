@@ -4,122 +4,63 @@ import PageHeader from '../components/PageHeader'
 
 const DEX = { red: '#cc2020', black: '#111111' }
 
-const CATEGORIES = [
-    {
-        id: 'general',
-        label: 'General',
-        icon: '🎒',
-        color: '#6366f1',
-        description: 'Evolution stones, fossils, battle items, escape items and more',
-        slugs: [
-            'evolution-stones', 'fossils', 'flutes', 'shards',
-            'evolution-items', 'escape-items', 'exchangeable-items', 'valuable-items',
-            'scents', 'nectars', 'candy', 'curry-ingredients',
-            'sandwich-ingredients', 'tera-shards',
-        ],
-    },
-    {
-        id: 'medicine',
-        label: 'Medicine',
-        icon: '💊',
-        color: '#ec4899',
-        description: 'Healing items, vitamins, status cures and herbal medicine',
-        slugs: [
-            'medicine', 'healing', 'vitamins', 'revival', 'status-cures',
-            'pp-recovery', 'drinks', 'feathers', 'mints', 'herbal-medicine',
-        ],
-    },
-    {
-        id: 'held-items',
-        label: 'Held Items',
-        icon: '💎',
-        color: '#6366f1',
-        description: 'Items Pokémon hold to boost their abilities in battle',
-        slugs: [
-            'held-items', 'choice', 'plates', 'type-enhancement', 'stat-boosts',
-            'scarves', 'jewels', 'mega-stones', 'z-crystals', 'memories',
-            'type-protection', 'effort-training', 'bad-held-items',
-        ],
-    },
-    {
-        id: 'machines',
-        label: 'TM / HM',
-        icon: '💿',
-        color: '#06b6d4',
-        description: 'Technical and Hidden Machines that teach moves',
-        slugs: ['all-machines'],
-    },
-    {
-        id: 'pokeballs',
-        label: 'Poké Balls',
-        icon: '⚪',
-        color: '#f59e0b',
-        description: 'Capsules used to catch and store Pokémon',
-        slugs: ['standard-balls', 'special-balls', 'apricorn-balls', 'sport-balls'],
-    },
-    {
-        id: 'berries',
-        label: 'Berries',
-        icon: '🍓',
-        color: '#22c55e',
-        description: 'Natural berries with a variety of in-battle effects',
-        slugs: ['in-a-pinch', 'picky-healing', 'baking-only', 'type-protection', 'other'],
-    },
-    {
-        id: 'key-items',
-        label: 'Key Items',
-        icon: '🔑',
-        color: '#f97316',
-        description: 'Important items needed to progress through the game',
-        slugs: ['key-items', 'event-items', 'gameplay', 'plot-advancement',
-            'collectibles', 'loot', 'species-specific', 'training'],
-    },
-    {
-        id: 'other',
-        label: 'Other',
-        icon: '📦',
-        color: '#64748b',
-        description: 'Mail, Wonder Launcher items and Rotom Powers',
-        slugs: ['all-mail', 'miracle-shooter', 'data-cards'],
-    },
-    {
-        id: 'battle-items',
-        label: 'Battle Items',
-        icon: '⚔️',
-        color: '#ef4444',
-        description: 'X items, Dire Hit and stat boosters used during battle',
-        slugs: ['x-items', 'stat-boosts'],
-    },
+const TYPE_CATEGORIES = [
+    { id: 'normal', label: 'Normal', icon: '⭐', color: '#6b7280' },
+    { id: 'fire', label: 'Fire', icon: '🔥', color: '#dc2626' },
+    { id: 'water', label: 'Water', icon: '💧', color: '#2563eb' },
+    { id: 'grass', label: 'Grass', icon: '🌿', color: '#16a34a' },
+    { id: 'electric', label: 'Electric', icon: '⚡', color: '#ca8a04' },
+    { id: 'ice', label: 'Ice', icon: '❄️', color: '#0891b2' },
+    { id: 'fighting', label: 'Fighting', icon: '🥊', color: '#b91c1c' },
+    { id: 'poison', label: 'Poison', icon: '☠️', color: '#7c3aed' },
+    { id: 'ground', label: 'Ground', icon: '🌍', color: '#92400e' },
+    { id: 'flying', label: 'Flying', icon: '🦅', color: '#0284c7' },
+    { id: 'psychic', label: 'Psychic', icon: '🔮', color: '#db2777' },
+    { id: 'bug', label: 'Bug', icon: '🐛', color: '#65a30d' },
+    { id: 'rock', label: 'Rock', icon: '🪨', color: '#78716c' },
+    { id: 'ghost', label: 'Ghost', icon: '👻', color: '#6d28d9' },
+    { id: 'dragon', label: 'Dragon', icon: '🐉', color: '#4338ca' },
+    { id: 'dark', label: 'Dark', icon: '🌑', color: '#db2777' },
+    { id: 'steel', label: 'Steel', icon: '⚙️', color: '#475569' },
+    { id: 'fairy', label: 'Fairy', icon: '🌸', color: '#be185d' },
 ]
 
-// ── Category card grid ────────────────────────────────────────────
-function CategoryGrid({ onSelect }) {
+const DAMAGE_COLORS = {
+    physical: { bg: '#b91c1c', label: 'Physical' },
+    special: { bg: '#1d4ed8', label: 'Special' },
+    status: { bg: '#374151', label: 'Status' },
+}
+
+const PAGE_SIZE = 20
+
+// ── Type category grid ────────────────────────────────────────────
+function TypeGrid({ onSelect }) {
     return (
         <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))',
-            gap: '1rem',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))',
+            gap: '0.85rem',
         }}>
-            {CATEGORIES.map(cat => (
+            {TYPE_CATEGORIES.map(cat => (
                 <div
                     key={cat.id}
                     onClick={() => onSelect(cat)}
                     style={{
-                        backgroundColor: '#1f2937', borderRadius: '1.25rem', padding: '1.5rem',
+                        backgroundColor: '#1f2937', borderRadius: '1.25rem', padding: '1.25rem',
                         border: '2px solid transparent', cursor: 'pointer', transition: 'all 0.2s',
                         position: 'relative', overflow: 'hidden',
+                        display: 'flex', flexDirection: 'column', gap: '0.5rem',
                     }}
-                    onMouseEnter={e => { e.currentTarget.style.borderColor = cat.color; e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.boxShadow = '0 12px 32px rgba(0,0,0,0.4)' }}
+                    onMouseEnter={e => { e.currentTarget.style.borderColor = cat.color; e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.boxShadow = `0 12px 32px rgba(0,0,0,0.4)` }}
                     onMouseLeave={e => { e.currentTarget.style.borderColor = 'transparent'; e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none' }}
                 >
                     <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '4px', backgroundColor: cat.color }} />
-                    <div style={{ fontSize: '2.5rem', marginBottom: '0.75rem' }}>{cat.icon}</div>
-                    <h2 style={{ color: 'white', fontWeight: 'bold', fontSize: '1.1rem', margin: '0 0 0.4rem' }}>{cat.label}</h2>
-                    <p style={{ color: '#9ca3af', fontSize: '0.82rem', margin: '0 0 1rem', lineHeight: 1.5 }}>{cat.description}</p>
+                    <span style={{ fontSize: '2rem' }}>{cat.icon}</span>
+                    <h2 style={{ color: 'white', fontWeight: 'bold', fontSize: '1rem', margin: 0 }}>{cat.label}</h2>
                     <span style={{
                         backgroundColor: cat.color + '25', color: cat.color,
                         border: `1px solid ${cat.color}50`, borderRadius: '9999px',
-                        fontSize: '0.75rem', fontWeight: '700', padding: '0.2rem 0.7rem',
+                        fontSize: '0.72rem', fontWeight: '700', padding: '0.15rem 0.6rem', alignSelf: 'flex-start',
                     }}>Browse →</span>
                 </div>
             ))}
@@ -127,38 +68,58 @@ function CategoryGrid({ onSelect }) {
     )
 }
 
-// ── Item card ─────────────────────────────────────────────────────
-function ItemCard({ item, color, icon, onClick }) {
-    const sprite = item.sprites?.default
+// ── Move card ─────────────────────────────────────────────────────
+function MoveCard({ move, color, onClick }) {
+    const dmg = DAMAGE_COLORS[move.damageClass] || DAMAGE_COLORS.status
     return (
         <div onClick={onClick} style={{
             backgroundColor: '#1f2937', borderRadius: '1rem', padding: '1rem',
-            display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem',
             border: '2px solid transparent', cursor: 'pointer', transition: 'all 0.18s',
             position: 'relative', overflow: 'hidden',
+            display: 'flex', flexDirection: 'column', gap: '0.5rem',
         }}
             onMouseEnter={e => { e.currentTarget.style.borderColor = color; e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 8px 24px rgba(0,0,0,0.4)' }}
             onMouseLeave={e => { e.currentTarget.style.borderColor = 'transparent'; e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none' }}
         >
-            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '3px', backgroundColor: color, opacity: 0.7 }} />
-            <div style={{ width: '64px', height: '64px', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#374151', borderRadius: '50%', border: `2px solid ${color}30` }}>
-                {sprite
-                    ? <img src={sprite} alt={item.name} style={{ width: '48px', height: '48px', imageRendering: 'pixelated', objectFit: 'contain' }} />
-                    : <span style={{ fontSize: '1.5rem' }}>{icon}</span>
-                }
-            </div>
-            <span style={{ color: 'white', fontWeight: '600', fontSize: '0.8rem', textAlign: 'center', textTransform: 'capitalize', lineHeight: 1.3 }}>
-                {item.name.replace(/-/g, ' ')}
+            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '3px', backgroundColor: color }} />
+
+            {/* Name */}
+            <span style={{ color: 'white', fontWeight: '700', fontSize: '0.9rem', textTransform: 'capitalize', lineHeight: 1.2 }}>
+                {move.name.replace(/-/g, ' ')}
             </span>
+
+            {/* Damage class badge */}
+            <span style={{
+                backgroundColor: dmg.bg, color: 'white',
+                fontSize: '0.65rem', fontWeight: '700', padding: '0.15rem 0.5rem',
+                borderRadius: '9999px', alignSelf: 'flex-start',
+            }}>{dmg.label}</span>
+
+            {/* Stats row */}
+            <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginTop: '0.25rem' }}>
+                <StatPill label="PWR" value={move.power ?? '—'} color={color} />
+                <StatPill label="ACC" value={move.accuracy ? `${move.accuracy}%` : '—'} color={color} />
+                <StatPill label="PP" value={move.pp ?? '—'} color={color} />
+            </div>
         </div>
     )
 }
 
-const PAGE_SIZE = 20
+function StatPill({ label, value, color }) {
+    return (
+        <div style={{
+            display: 'flex', flexDirection: 'column', alignItems: 'center',
+            backgroundColor: '#374151', borderRadius: '0.5rem', padding: '0.2rem 0.5rem', minWidth: '40px',
+        }}>
+            <span style={{ color: '#9ca3af', fontSize: '0.6rem', fontWeight: '700' }}>{label}</span>
+            <span style={{ color: 'white', fontWeight: '700', fontSize: '0.8rem' }}>{value}</span>
+        </div>
+    )
+}
 
-// ── Items list for a selected category ───────────────────────────
-function CategoryItemList({ category, onBack }) {
-    const [items, setItems] = useState([])
+// ── Move list for a selected type ────────────────────────────────
+function TypeMoveList({ category, onBack }) {
+    const [moves, setMoves] = useState([])
     const [displayed, setDisplayed] = useState([])
     const [loading, setLoading] = useState(true)
     const [search, setSearch] = useState('')
@@ -166,60 +127,58 @@ function CategoryItemList({ category, onBack }) {
     const cache = useRef({})
     const navigate = useNavigate()
 
+    // Fetch all moves for this type
     useEffect(() => {
         let cancelled = false
-        Promise.allSettled(
-            category.slugs.map(slug =>
-                fetch(`https://pokeapi.co/api/v2/item-category/${slug}`)
-                    .then(r => r.ok ? r.json() : null)
-                    .then(d => d?.items || [])
-                    .catch(() => [])
-            )
-        ).then(results => {
-            if (cancelled) return
-            const all = results.flatMap(r => r.status === 'fulfilled' ? r.value : [])
-            const seen = new Set()
-            const unique = all.filter(i => seen.has(i.name) ? false : seen.add(i.name))
-            setItems(unique)
-            setDisplayed([])
-        })
+        fetch(`https://pokeapi.co/api/v2/type/${category.id}`)
+            .then(r => r.json())
+            .then(data => {
+                if (cancelled) return
+                const moveList = data.moves.map(m => ({ name: m.name, url: m.url }))
+                setMoves(moveList)
+                setDisplayed([])
+            })
         return () => { cancelled = true }
     }, [category.id])
 
     const fetchDetails = useCallback(async (list) => {
         return Promise.all(
-            list.map(async item => {
-                if (cache.current[item.name]) return cache.current[item.name]
+            list.map(async m => {
+                if (cache.current[m.name]) return cache.current[m.name]
                 try {
-                    const d = await fetch(item.url).then(r => r.json())
-                    const result = { id: d.id, name: d.name, sprites: d.sprites }
-                    cache.current[item.name] = result
+                    const d = await fetch(m.url).then(r => r.json())
+                    const result = {
+                        name: d.name,
+                        power: d.power,
+                        accuracy: d.accuracy,
+                        pp: d.pp,
+                        damageClass: d.damage_class?.name,
+                    }
+                    cache.current[m.name] = result
                     return result
-                } catch { return { id: null, name: item.name, sprites: {} } }
+                } catch { return { name: m.name, power: null, accuracy: null, pp: null, damageClass: 'status' } }
             })
         )
     }, [])
 
-    const filteredItems = search.trim()
-        ? items.filter(i => i.name.includes(search.toLowerCase().trim()))
-        : items
+    const filteredMoves = search.trim()
+        ? moves.filter(m => m.name.includes(search.toLowerCase().trim()))
+        : moves
 
-    const totalPages = Math.max(1, Math.ceil(filteredItems.length / PAGE_SIZE))
-    const pageSlice = filteredItems.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
+    const totalPages = Math.max(1, Math.ceil(filteredMoves.length / PAGE_SIZE))
+    const pageSlice = filteredMoves.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
 
     useEffect(() => {
         let cancelled = false
         if (pageSlice.length === 0) {
-            Promise.resolve().then(() => {
-                if (!cancelled) { setDisplayed([]); setLoading(false) }
-            })
+            Promise.resolve().then(() => { if (!cancelled) { setDisplayed([]); setLoading(false) } })
             return () => { cancelled = true }
         }
         fetchDetails(pageSlice).then(details => {
             if (!cancelled) { setDisplayed(details); setLoading(false); window.scrollTo({ top: 0, behavior: 'smooth' }) }
         })
         return () => { cancelled = true }
-    }, [items, search, page])
+    }, [moves, search, page])
 
     const handleSearch = (v) => { setSearch(v); setPage(1) }
 
@@ -246,17 +205,15 @@ function CategoryItemList({ category, onBack }) {
 
     return (
         <div>
-            {/* Back button — above everything */}
+            {/* Back button */}
             <button onClick={onBack} style={{
                 backgroundColor: 'rgba(0,0,0,0.4)', border: '2px solid rgba(255,255,255,0.15)',
                 color: 'rgba(255,255,255,0.7)', borderRadius: '0.75rem',
                 padding: '0.45rem 1rem', cursor: 'pointer', fontWeight: '600',
                 fontSize: '0.85rem', marginBottom: '1.25rem', display: 'flex', alignItems: 'center', gap: '0.4rem',
-            }}>
-                ← Back to Categories
-            </button>
+            }}>← Back to Types</button>
 
-            {/* Category sub-header */}
+            {/* Sub-header */}
             <div style={{
                 backgroundColor: category.color,
                 border: `3px solid ${DEX.black}`,
@@ -278,19 +235,32 @@ function CategoryItemList({ category, onBack }) {
                     <circle cx="85" cy="30" r="4" fill={DEX.black} />
                 </svg>
                 <p style={{ color: 'rgba(255,255,255,0.65)', fontSize: '0.7rem', fontWeight: '700', letterSpacing: '0.14em', textTransform: 'uppercase', margin: '0 0 0.25rem' }}>
-                    Items › {category.label}
+                    Moves › {category.label} Type
                 </p>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.85rem' }}>
                     <span style={{ fontSize: '1.75rem' }}>{category.icon}</span>
                     <h2 style={{ color: 'white', fontSize: 'clamp(1.25rem, 3vw, 1.75rem)', fontWeight: 'bold', margin: 0 }}>
-                        {category.label}
+                        {category.label} Moves
                     </h2>
-                    {items.length > 0 && (
+                    {moves.length > 0 && (
                         <span style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.9rem' }}>
-                            {filteredItems.length.toLocaleString()} items
+                            {filteredMoves.length.toLocaleString()} moves
                         </span>
                     )}
                 </div>
+
+                {/* Legend */}
+                <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '0.85rem' }}>
+                    {Object.entries(DAMAGE_COLORS).map(([key, val]) => (
+                        <span key={key} style={{
+                            backgroundColor: val.bg + '40', color: 'white',
+                            border: `1px solid ${val.bg}80`, borderRadius: '9999px',
+                            fontSize: '0.7rem', fontWeight: '600', padding: '0.15rem 0.6rem',
+                        }}>{val.label}</span>
+                    ))}
+                </div>
+
+                {/* Search */}
                 <div style={{
                     display: 'flex', alignItems: 'center', gap: '0.6rem',
                     backgroundColor: 'rgba(0,0,0,0.35)', backdropFilter: 'blur(8px)',
@@ -300,7 +270,7 @@ function CategoryItemList({ category, onBack }) {
                     <span style={{ fontSize: '1rem', flexShrink: 0 }}>🔍</span>
                     <input
                         type="text"
-                        placeholder={`Search ${category.label.toLowerCase()}...`}
+                        placeholder={`Search ${category.label.toLowerCase()} moves...`}
                         value={search}
                         onChange={e => handleSearch(e.target.value)}
                         style={{ flex: 1, backgroundColor: 'transparent', color: 'white', border: 'none', outline: 'none', fontSize: '0.9rem', padding: '0.35rem 0' }}
@@ -319,18 +289,17 @@ function CategoryItemList({ category, onBack }) {
             ) : displayed.length === 0 ? (
                 <div style={{ textAlign: 'center', padding: '4rem', color: '#6b7280' }}>
                     <p style={{ fontSize: '2.5rem', margin: '0 0 0.5rem' }}>😔</p>
-                    <p>No items found{search ? ` matching "${search}"` : ''}</p>
+                    <p>No moves found{search ? ` matching "${search}"` : ''}</p>
                 </div>
             ) : (
                 <>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(130px, 1fr))', gap: '0.75rem', marginBottom: '2rem' }}>
-                        {displayed.map(item => (
-                            <ItemCard
-                                key={item.name}
-                                item={item}
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '0.75rem', marginBottom: '2rem' }}>
+                        {displayed.map(move => (
+                            <MoveCard
+                                key={move.name}
+                                move={move}
                                 color={category.color}
-                                icon={category.icon}
-                                onClick={() => navigate(`/items/${item.name}`)}
+                                onClick={() => navigate(`/moves/${move.name}`)}
                             />
                         ))}
                     </div>
@@ -338,7 +307,7 @@ function CategoryItemList({ category, onBack }) {
                     {totalPages > 1 && (
                         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.75rem' }}>
                             <p style={{ color: 'rgba(255,255,255,0.45)', fontSize: '0.8rem', margin: 0 }}>
-                                Page {page} of {totalPages} · {filteredItems.length.toLocaleString()} items
+                                Page {page} of {totalPages} · {filteredMoves.length.toLocaleString()} moves
                             </p>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', flexWrap: 'wrap', justifyContent: 'center' }}>
                                 <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1}
@@ -347,13 +316,13 @@ function CategoryItemList({ category, onBack }) {
                                     onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.15)' }}
                                 >← Prev</button>
 
-                                {getPaginationRange().map((item, i) =>
-                                    item === '...'
+                                {getPaginationRange().map((p, i) =>
+                                    p === '...'
                                         ? <span key={`d${i}`} style={{ color: 'rgba(255,255,255,0.4)', padding: '0 0.25rem' }}>…</span>
-                                        : <button key={item} onClick={() => setPage(item)} style={btnStyle(item === page)}
-                                            onMouseEnter={e => { if (item !== page) e.currentTarget.style.borderColor = category.color }}
-                                            onMouseLeave={e => { if (item !== page) e.currentTarget.style.borderColor = 'rgba(255,255,255,0.15)' }}
-                                        >{item}</button>
+                                        : <button key={p} onClick={() => setPage(p)} style={btnStyle(p === page)}
+                                            onMouseEnter={e => { if (p !== page) e.currentTarget.style.borderColor = category.color }}
+                                            onMouseLeave={e => { if (p !== page) e.currentTarget.style.borderColor = 'rgba(255,255,255,0.15)' }}
+                                        >{p}</button>
                                 )}
 
                                 <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages}
@@ -371,20 +340,20 @@ function CategoryItemList({ category, onBack }) {
 }
 
 // ── Main page ─────────────────────────────────────────────────────
-export default function ItemsPage() {
-    const [selectedCategory, setSelectedCategory] = useState(null)
+export default function MovesPage() {
+    const [selectedType, setSelectedType] = useState(null)
 
     return (
         <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '2.5rem 1rem 5rem' }}>
-            {!selectedCategory ? (
+            {!selectedType ? (
                 <>
-                    <PageHeader icon="🎒" title="Items" subtitle="Browse items by category" />
-                    <CategoryGrid onSelect={setSelectedCategory} />
+                    <PageHeader icon="💥" title="Moves" subtitle="Browse moves by type" />
+                    <TypeGrid onSelect={setSelectedType} />
                 </>
             ) : (
-                <CategoryItemList
-                    category={selectedCategory}
-                    onBack={() => setSelectedCategory(null)}
+                <TypeMoveList
+                    category={selectedType}
+                    onBack={() => setSelectedType(null)}
                 />
             )}
             <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
