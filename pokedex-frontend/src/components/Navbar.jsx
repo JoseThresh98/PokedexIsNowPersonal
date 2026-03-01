@@ -7,13 +7,14 @@ const DEX = {
 }
 
 const navLinks = [
-    { path: '/', label: 'Search', icon: '🔍' },
-    { path: '/pokedex', label: 'Pokédex', icon: '📖' },
-    { path: '/abilities', label: 'Abilities', icon: '⚡' },
-    { path: '/types', label: 'Types', icon: '🔥' },
-    { path: '/regions', label: 'Regions', icon: '🌍' },
-    { path: '/rarity', label: 'Rarity', icon: '🌟' },
-    { path: '/items', label: 'Items', icon: '🎒' },
+    { path: '/', label: 'Search', icon: '/icons/search.png' },
+    { path: '/pokedex', label: 'Pokédex', icon: '/icons/pokedex.png' },
+    { path: '/abilities', label: 'Abilities', icon: '/icons/abilities.png' },
+    { path: '/types', label: 'Types', icon: '/icons/types.png' },
+    { path: '/regions', label: 'Regions', icon: '/icons/regions.png' },
+    { path: '/rarity', label: 'Rarity', icon: '/icons/rarity.png' },
+    { path: '/items', label: 'Items', icon: '/icons/items.png' },
+    { path: '/moves', label: 'Moves', icon: '/icons/moves.png' },
 ]
 
 function Navbar() {
@@ -89,7 +90,8 @@ function Navbar() {
                                 onMouseEnter={e => { if (!active) e.currentTarget.style.color = 'white'; if (!active) e.currentTarget.style.backgroundColor = '#1f2937' }}
                                 onMouseLeave={e => { if (!active) e.currentTarget.style.color = '#9ca3af'; if (!active) e.currentTarget.style.backgroundColor = 'transparent' }}
                             >
-                                {link.icon} {link.label}
+                                <img src={link.icon} alt={link.label} style={{ width: '20px', height: '20px', objectFit: 'contain' }} />
+                                {link.label}
                             </Link>
                         )
                     })}
@@ -178,7 +180,7 @@ function Navbar() {
                                     boxShadow: active ? `2px 2px 0 ${DEX.black}` : 'none',
                                 }}
                             >
-                                <span style={{ fontSize: '1.2rem' }}>{link.icon}</span>
+                                <img src={link.icon} alt={link.label} style={{ width: '26px', height: '26px', objectFit: 'contain' }} />
                                 {link.label}
                             </Link>
                         )

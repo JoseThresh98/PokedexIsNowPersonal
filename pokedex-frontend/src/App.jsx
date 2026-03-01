@@ -16,6 +16,8 @@ import RarityPage from './pages/RarityPage'
 import TrainerDetailPage from './pages/TrainerDetailPage'
 import ItemsPage from './pages/ItemsPage'
 import ItemDetailPage from './pages/ItemDetailPage'
+import MovesPage from './pages/MovesPage'
+import MoveDetailPage from './pages/MoveDetailPage'
 
 
 function App() {
@@ -81,6 +83,8 @@ function App() {
                     <Route path="/trainer/:trainerId" element={<TrainerDetailPage />} />
                     <Route path="/items" element={<ItemsPage />} />
                     <Route path="/items/:name" element={<ItemDetailPage />} />
+                    <Route path="/moves" element={<MovesPage />} />
+                    <Route path="/moves/:name" element={<MoveDetailPage />} />
                 </Routes>
             </main>
             <Footer />
