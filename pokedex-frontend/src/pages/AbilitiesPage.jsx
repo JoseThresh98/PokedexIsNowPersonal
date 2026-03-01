@@ -22,29 +22,21 @@ function AbilitiesPage() {
 
     // Load all ability names once
     useEffect(() => {
-        const fetchNames = async () => {
-            try {
-                const data = await getAbilityList()
-                setAllAbilities(data.results)
-            } finally {
-                setLoading(false)
-            }
-        }
-        fetchNames()
+        getAbilityList(400)
+            .then(data => { setAllAbilities(data.results) })
+            .finally(() => setLoading(false))
     }, [])
 
-    // Fetch details for current page to get pokemon counts
+    // Fetch details for current page slice
     useEffect(() => {
         if (allAbilities.length === 0) return
+        let cancelled = false
 
         const filtered = allAbilities.filter(a =>
             a.name.includes(search.toLowerCase().trim())
         )
         const start = (page - 1) * PAGE_SIZE
         const slice = filtered.slice(start, start + PAGE_SIZE)
-
-        setLoadingDetails(true)
-        setDisplayed([])
 
         Promise.all(
             slice.map(a =>
@@ -55,9 +47,10 @@ function AbilitiesPage() {
                 }))
             )
         ).then(results => {
-            setDisplayed(results)
-            setLoadingDetails(false)
+            if (!cancelled) { setDisplayed(results); setLoadingDetails(false) }
         })
+
+        return () => { cancelled = true }
     }, [allAbilities, page, search])
 
     const filtered = allAbilities.filter(a =>
@@ -72,9 +65,9 @@ function AbilitiesPage() {
                 title="Abilities"
                 icon="⚡"
                 subtitle={`${allAbilities.length} total abilities — click one to see details & Pokémon`}
-                search={search}
+                searchValue={search}
                 onSearch={(val) => { setSearch(val); setPage(1) }}
-                placeholder="Search abilities..."
+                searchPlaceholder="Search abilities..."
             />
 
             {/* Initial load spinner */}
@@ -105,12 +98,9 @@ function AbilitiesPage() {
                                 onMouseEnter={e => e.currentTarget.style.borderColor = '#dc2626'}
                                 onMouseLeave={e => e.currentTarget.style.borderColor = 'transparent'}
                             >
-                                {/* Name */}
                                 <h3 style={{ color: 'white', fontWeight: 'bold', textTransform: 'capitalize', fontSize: '1rem' }}>
                                     {getIcon(ability.name)} {ability.name.replace(/-/g, ' ')}
                                 </h3>
-
-                                {/* Description */}
                                 <p style={{ color: '#9ca3af', fontSize: '0.78rem', lineHeight: '1.4', flex: 1 }}>
                                     {ability.description
                                         ? ability.description.length > 80
@@ -118,8 +108,6 @@ function AbilitiesPage() {
                                             : ability.description
                                         : 'No description available.'}
                                 </p>
-
-                                {/* Pokemon count badge */}
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginTop: '0.25rem' }}>
                                     <span style={{ backgroundColor: '#dc2626', color: 'white', fontSize: '0.75rem', fontWeight: 'bold', padding: '0.2rem 0.6rem', borderRadius: '9999px' }}>
                                         {getIcon(ability.name)} {ability.count} Pokémon
@@ -142,9 +130,7 @@ function AbilitiesPage() {
                             border: 'none', borderRadius: '9999px', padding: '0.5rem 1.25rem',
                             fontWeight: 'bold', cursor: page === 1 ? 'not-allowed' : 'pointer'
                         }}
-                    >
-                        ← Prev
-                    </button>
+                    >← Prev</button>
                     <span style={{ color: '#9ca3af' }}>Page {page} of {totalPages}</span>
                     <button
                         onClick={() => setPage(p => Math.min(totalPages, p + 1))}
@@ -154,11 +140,11 @@ function AbilitiesPage() {
                             border: 'none', borderRadius: '9999px', padding: '0.5rem 1.25rem',
                             fontWeight: 'bold', cursor: page === totalPages ? 'not-allowed' : 'pointer'
                         }}
-                    >
-                        Next →
-                    </button>
+                    >Next →</button>
                 </div>
             )}
+
+            <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
         </div>
     )
 }

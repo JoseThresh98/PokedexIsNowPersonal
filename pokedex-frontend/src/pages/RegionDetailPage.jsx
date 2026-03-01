@@ -1,5 +1,5 @@
 ﻿import { useState, useEffect } from 'react'
-import { useParams, Link } from 'react-router-dom'
+import { useParams, useNavigate, useLocation, Link } from 'react-router-dom'
 import { getRegionDetail } from '../services/pokemonService'
 import { regionData, regionColors, regionIcons } from '../data/regionData'
 import { nameToTrainerId } from '../data/trainerIdMap'
@@ -15,7 +15,6 @@ const typeColors = {
     flying: '#075985', normal: '#374151',
 }
 
-// Trainer row with sprite — links to detail page if data exists
 function TrainerCard({ name, children, color }) {
     const trainerId = nameToTrainerId[name]
     const sprite = trainerId ? trainerData[trainerId]?.sprite : null
@@ -32,10 +31,7 @@ function TrainerCard({ name, children, color }) {
             onMouseLeave={e => { e.currentTarget.style.borderColor = 'transparent'; e.currentTarget.style.transform = 'translateX(0)' }}
         >
             {sprite && (
-                <img
-                    src={sprite}
-                    alt={name}
-                    onError={e => { e.target.style.display = 'none' }}
+                <img src={sprite} alt={name} onError={e => { e.target.style.display = 'none' }}
                     style={{ height: '52px', width: 'auto', objectFit: 'contain', flexShrink: 0, filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.4))' }}
                 />
             )}
@@ -51,100 +47,43 @@ function TrainerCard({ name, children, color }) {
         : inner
 }
 
-// Some Pokémon only have sprites on their form endpoint, not the base endpoint
-// Maps rival names → Pokémon Showdown trainer sprite filenames
 const RIVAL_SPRITES = {
-    // Kanto
-    'blue': 'blue.png',
-    // Johto
-    'silver': 'silver.png',
-    // Hoenn
-    'brendan': 'brendan.png',
-    'may': 'may.png',
-    // Sinnoh
-    'barry': 'barry.png',
-    // Unova
-    'cheren': 'cheren.png',
-    'bianca': 'bianca.png',
-    'n': 'n.png',
-    // Kalos
-    'serena': 'serena.png',
-    'calem': 'calem.png',
-    'shauna': 'shauna.png',
-    'tierno': 'tierno.png',
-    'trevor': 'trevor.png',
-    // Alola
-    'hau': 'hau.png',
-    'gladion': 'gladion.png',
-    // Galar
-    'hop': 'hop.png',
-    'bede': 'bede.png',
-    'marnie': 'marnie.png',
-    // Paldea
-    'nemona': 'nemona.png',
-    'arven': 'arven.png',
-    'penny': 'penny.png',
-    // Hisui
-    'rei': 'rei.png',
-    'akari': 'akari.png',
-    'volo': 'volo.png',
+    'blue': 'blue.png', 'silver': 'silver.png', 'brendan': 'brendan.png', 'may': 'may.png',
+    'barry': 'barry.png', 'cheren': 'cheren.png', 'bianca': 'bianca.png', 'n': 'n.png',
+    'serena': 'serena.png', 'calem': 'calem.png', 'shauna': 'shauna.png',
+    'tierno': 'tierno.png', 'trevor': 'trevor.png', 'hau': 'hau.png', 'gladion': 'gladion.png',
+    'hop': 'hop.png', 'bede': 'bede.png', 'marnie': 'marnie.png',
+    'nemona': 'nemona.png', 'arven': 'arven.png', 'penny': 'penny.png',
+    'rei': 'rei.png', 'akari': 'akari.png', 'volo': 'volo.png',
 }
 
 const FORM_OVERRIDES = {
-    'giratina': 'giratina-altered',
-    'shaymin': 'shaymin-land',
-    'tornadus': 'tornadus-incarnate',
-    'thundurus': 'thundurus-incarnate',
-    'landorus': 'landorus-incarnate',
-    'keldeo': 'keldeo-ordinary',
-    'meloetta': 'meloetta-aria',
-    'basculin': 'basculin-red-striped',
-    'darmanitan': 'darmanitan-standard',
-    'zygarde': 'zygarde-50',
-    'oricorio': 'oricorio-baile',
-    'lycanroc': 'lycanroc-midday',
-    'wishiwashi': 'wishiwashi-solo',
-    'minior': 'minior-red-meteor',
-    'mimikyu': 'mimikyu-disguised',
-    'toxtricity': 'toxtricity-amped',
-    'eiscue': 'eiscue-ice',
-    'indeedee': 'indeedee-male',
-    'morpeko': 'morpeko-full-belly',
-    'urshifu': 'urshifu-single-strike',
-    'calyrex': 'calyrex',
-    'enamorus': 'enamorus-incarnate',
-    // Hoenn
-    'deoxys': 'deoxys-normal',
-    // Alola
-    'necrozma': 'necrozma',
-    'tapu-koko': 'tapu-koko',
-    'tapu-lele': 'tapu-lele',
-    'tapu-bulu': 'tapu-bulu',
-    'tapu-fini': 'tapu-fini',
-    'hoopa': 'hoopa',
-    // Galar
-    'zacian': 'zacian',
-    'zamazenta': 'zamazenta',
-    'kubfu': 'kubfu',
-    // Paldea
-    'wo-chien': 'wo-chien',
-    'chien-pao': 'chien-pao',
-    'ting-lu': 'ting-lu',
-    'chi-yu': 'chi-yu',
-    'ogerpon': 'ogerpon-teal',
-    'terapagos': 'terapagos-normal',
+    'giratina': 'giratina-altered', 'shaymin': 'shaymin-land',
+    'tornadus': 'tornadus-incarnate', 'thundurus': 'thundurus-incarnate',
+    'landorus': 'landorus-incarnate', 'keldeo': 'keldeo-ordinary',
+    'meloetta': 'meloetta-aria', 'basculin': 'basculin-red-striped',
+    'darmanitan': 'darmanitan-standard', 'zygarde': 'zygarde-50',
+    'oricorio': 'oricorio-baile', 'lycanroc': 'lycanroc-midday',
+    'wishiwashi': 'wishiwashi-solo', 'minior': 'minior-red-meteor',
+    'mimikyu': 'mimikyu-disguised', 'toxtricity': 'toxtricity-amped',
+    'eiscue': 'eiscue-ice', 'indeedee': 'indeedee-male',
+    'morpeko': 'morpeko-full-belly', 'urshifu': 'urshifu-single-strike',
+    'calyrex': 'calyrex', 'enamorus': 'enamorus-incarnate',
+    'deoxys': 'deoxys-normal', 'necrozma': 'necrozma',
+    'tapu-koko': 'tapu-koko', 'tapu-lele': 'tapu-lele',
+    'tapu-bulu': 'tapu-bulu', 'tapu-fini': 'tapu-fini', 'hoopa': 'hoopa',
+    'zacian': 'zacian', 'zamazenta': 'zamazenta', 'kubfu': 'kubfu',
+    'wo-chien': 'wo-chien', 'chien-pao': 'chien-pao',
+    'ting-lu': 'ting-lu', 'chi-yu': 'chi-yu',
+    'ogerpon': 'ogerpon-teal', 'terapagos': 'terapagos-normal',
 }
 
-// Legendary Pokémon card with sprite fetched from PokéAPI
-// index prop is used to stagger requests and avoid rate limiting
 function LegendaryCard({ name, color, index = 0 }) {
     const [data, setData] = useState(null)
 
     useEffect(() => {
         let cancelled = false
         const apiName = FORM_OVERRIDES[name] || name
-
-        // Stagger requests by 80ms per card to avoid PokéAPI rate limiting
         const timer = setTimeout(() => {
             if (cancelled) return
             fetch(`https://pokeapi.co/api/v2/pokemon/${apiName}`)
@@ -153,29 +92,22 @@ function LegendaryCard({ name, color, index = 0 }) {
                     if (!cancelled) setData({
                         id: d.id,
                         types: d.types.map(t => t.type.name),
-                        sprite: d.sprites?.other?.['official-artwork']?.front_default
-                            || d.sprites?.front_default
-                            || null,
+                        sprite: d.sprites?.other?.['official-artwork']?.front_default || d.sprites?.front_default || null,
                     })
                 })
-                .catch(() => {
-                    // Fetch failed — still show the card with name but no sprite/id
-                    if (!cancelled) setData({ id: null, types: [], sprite: null })
-                })
+                .catch(() => { if (!cancelled) setData({ id: null, types: [], sprite: null }) })
         }, index * 80)
-
         return () => { cancelled = true; clearTimeout(timer) }
     }, [name, index])
 
     return (
         <Link to={`/pokemon/${name}`} style={{ textDecoration: 'none' }}>
-            <div
-                style={{
-                    backgroundColor: '#1f2937', borderRadius: '1.25rem', padding: '0.85rem',
-                    display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.35rem',
-                    border: '2px solid transparent', transition: 'all 0.2s', cursor: 'pointer',
-                    minHeight: '150px', justifyContent: 'center',
-                }}
+            <div style={{
+                backgroundColor: '#1f2937', borderRadius: '1.25rem', padding: '0.85rem',
+                display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.35rem',
+                border: '2px solid transparent', transition: 'all 0.2s', cursor: 'pointer',
+                minHeight: '150px', justifyContent: 'center',
+            }}
                 onMouseEnter={e => { e.currentTarget.style.borderColor = color; e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = `0 6px 20px ${color}44` }}
                 onMouseLeave={e => { e.currentTarget.style.borderColor = 'transparent'; e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none' }}
             >
@@ -216,14 +148,14 @@ function LegendaryCard({ name, color, index = 0 }) {
 
 function RegionDetailPage() {
     const { name } = useParams()
+    const navigate = useNavigate()
+    const routerLocation = useLocation()
+
     const [regionApiData, setRegionApiData] = useState(null)
     const [locations, setLocations] = useState([])
     const [loadingLocations, setLoadingLocations] = useState(false)
-    const [tab, setTab] = useState('overview')
+    const [tab, setTab] = useState(routerLocation.state?.tab || 'overview')
     const [loading, setLoading] = useState(true)
-    const [expandedLocation, setExpandedLocation] = useState(null)
-    const [locationPokemon, setLocationPokemon] = useState({})
-    const [loadingPokemon, setLoadingPokemon] = useState(false)
 
     const data = regionData[name]
     const color = regionColors[name] ?? '#374151'
@@ -232,9 +164,7 @@ function RegionDetailPage() {
     useEffect(() => {
         const run = async () => {
             setLoading(true)
-            setTab('overview')
-            setExpandedLocation(null)
-            setLocationPokemon({})
+            setTab(routerLocation.state?.tab || 'overview')
             try {
                 const apiData = await getRegionDetail(name)
                 setRegionApiData(apiData)
@@ -256,25 +186,6 @@ function RegionDetailPage() {
         })
     }, [tab, regionApiData])
 
-    const handleLocationClick = async (location) => {
-        if (expandedLocation === location.name) { setExpandedLocation(null); return }
-        setExpandedLocation(location.name)
-        if (locationPokemon[location.name]) return
-        setLoadingPokemon(true)
-        try {
-            const areaPokemon = []
-            for (const area of location.areas.slice(0, 3)) {
-                const areaData = await fetch(area.url).then(r => r.json())
-                areaData.pokemon_encounters.forEach(enc => {
-                    if (!areaPokemon.includes(enc.pokemon.name)) areaPokemon.push(enc.pokemon.name)
-                })
-            }
-            setLocationPokemon(prev => ({ ...prev, [location.name]: areaPokemon }))
-        } finally {
-            setLoadingPokemon(false)
-        }
-    }
-
     if (loading) return (
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh' }}>
             <div style={{ width: '3rem', height: '3rem', border: '4px solid #dc2626', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
@@ -284,7 +195,7 @@ function RegionDetailPage() {
     return (
         <div style={{ maxWidth: '900px', margin: '2rem auto', padding: '0 1rem 4rem' }}>
             <button
-                onClick={() => window.history.back()}
+                onClick={() => navigate('/regions')}
                 style={{
                     backgroundColor: 'rgba(0,0,0,0.4)', border: '2px solid rgba(255,255,255,0.15)',
                     color: 'rgba(255,255,255,0.7)', borderRadius: '0.75rem',
@@ -404,18 +315,13 @@ function RegionDetailPage() {
                                         <p style={{ color: '#6b7280', textAlign: 'center', padding: '2rem' }}>No route data available for this region.</p>
                                     )}
                                     {locations.map((loc, i) => (
-                                        <Link
-                                            key={loc.name}
-                                            to={`/regions/${name}/routes/${loc.name}`}
-                                            style={{ textDecoration: 'none' }}
-                                        >
-                                            <div
-                                                style={{
-                                                    backgroundColor: '#374151', borderRadius: '1rem',
-                                                    padding: '0.9rem 1.1rem',
-                                                    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-                                                    border: '2px solid transparent', transition: 'all 0.18s',
-                                                }}
+                                        <Link key={loc.name} to={`/regions/${name}/routes/${loc.name}`} style={{ textDecoration: 'none' }}>
+                                            <div style={{
+                                                backgroundColor: '#374151', borderRadius: '1rem',
+                                                padding: '0.9rem 1.1rem',
+                                                display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                                                border: '2px solid transparent', transition: 'all 0.18s',
+                                            }}
                                                 onMouseEnter={e => { e.currentTarget.style.borderColor = color; e.currentTarget.style.backgroundColor = '#3f4b5e' }}
                                                 onMouseLeave={e => { e.currentTarget.style.borderColor = 'transparent'; e.currentTarget.style.backgroundColor = '#374151' }}
                                             >
@@ -444,8 +350,6 @@ function RegionDetailPage() {
                     {/* TRAINERS TAB */}
                     {tab === 'trainers' && data && (
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-
-                            {/* Gyms */}
                             {data.gyms?.length > 0 && (
                                 <div>
                                     <h3 style={{ color: 'white', fontWeight: 'bold', marginBottom: '0.75rem', fontSize: '1.1rem' }}>🏅 Gyms & Trials</h3>
@@ -479,8 +383,6 @@ function RegionDetailPage() {
                                     </div>
                                 </div>
                             )}
-
-                            {/* Elite Four */}
                             {data.eliteFour?.length > 0 && (
                                 <div>
                                     <h3 style={{ color: 'white', fontWeight: 'bold', marginBottom: '0.75rem', fontSize: '1.1rem' }}>💎 Elite Four</h3>
@@ -499,8 +401,6 @@ function RegionDetailPage() {
                                     </div>
                                 </div>
                             )}
-
-                            {/* Champion */}
                             {data.champion && (
                                 <div>
                                     <h3 style={{ color: 'white', fontWeight: 'bold', marginBottom: '0.75rem', fontSize: '1.1rem' }}>👑 Champion</h3>
@@ -519,7 +419,7 @@ function RegionDetailPage() {
                         </div>
                     )}
 
-                    {/* LEGENDARIES TAB — sprite cards */}
+                    {/* LEGENDARIES TAB */}
                     {tab === 'legendaries' && data && (
                         <div>
                             <p style={{ color: '#9ca3af', fontSize: '0.85rem', marginBottom: '1.25rem' }}>
@@ -536,9 +436,9 @@ function RegionDetailPage() {
                 </div>
             </div>
             <style>{`
-        @keyframes spin { to { transform: rotate(360deg); } }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
-      `}</style>
+                @keyframes spin { to { transform: rotate(360deg); } }
+                @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+            `}</style>
         </div>
     )
 }
