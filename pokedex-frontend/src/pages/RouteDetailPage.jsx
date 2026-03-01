@@ -273,7 +273,7 @@ export default function RouteDetailPage() {
         <div style={{ textAlign: 'center', padding: '5rem 1rem', color: '#6b7280' }}>
             <p style={{ fontSize: '3rem' }}>😔</p>
             <p style={{ fontSize: '1.1rem', marginBottom: '1.5rem' }}>No encounter data found for this route.</p>
-            <button onClick={() => navigate(`/regions/${regionName}`)} style={{
+            <button onClick={() => navigate(`/regions/${regionName}`, { state: { tab: 'routes' } })} style={{
                 backgroundColor: 'rgba(0,0,0,0.4)', border: '2px solid rgba(255,255,255,0.15)',
                 color: 'rgba(255,255,255,0.7)', borderRadius: '0.75rem',
                 padding: '0.45rem 1rem', cursor: 'pointer', fontWeight: '600', fontSize: '0.85rem',
@@ -288,7 +288,7 @@ export default function RouteDetailPage() {
 
             {/* Back button */}
             <button
-                onClick={() => navigate(`/regions/${regionName}`)}
+                onClick={() => navigate(`/regions/${regionName}`, { state: { tab: 'routes' } })}
                 style={{
                     backgroundColor: 'rgba(0,0,0,0.4)', border: '2px solid rgba(255,255,255,0.15)',
                     color: 'rgba(255,255,255,0.7)', borderRadius: '0.75rem',

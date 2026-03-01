@@ -3,13 +3,6 @@ import { useParams, useNavigate, Link } from 'react-router-dom'
 
 const DEX = { red: '#cc2020', black: '#111111' }
 
-const typeColors = {
-    fire: '#b91c1c', water: '#1d4ed8', grass: '#15803d', electric: '#a16207',
-    psychic: '#be185d', ice: '#0e7490', dragon: '#4338ca', dark: '#1f2937',
-    fairy: '#9d174d', fighting: '#7f1d1d', poison: '#6b21a8', ground: '#92400e',
-    rock: '#78350f', bug: '#3f6212', ghost: '#4c1d95', steel: '#4b5563',
-    flying: '#075985', normal: '#374151',
-}
 
 function getCategoryColor(categoryName) {
     if (!categoryName) return '#6b7280'
@@ -82,8 +75,7 @@ export default function ItemDetailPage() {
     const [error, setError] = useState(false)
 
     useEffect(() => {
-        setLoading(true)
-        setError(false)
+        let cancelled = false
         fetch(`https://pokeapi.co/api/v2/item/${name}`)
             .then(r => { if (!r.ok) throw new Error(); return r.json() })
             .then(data => {
@@ -109,7 +101,8 @@ export default function ItemDetailPage() {
                 })
                 setLoading(false)
             })
-            .catch(() => { setError(true); setLoading(false) })
+            .catch(() => { if (!cancelled) { setError(true); setLoading(false) } })
+        return () => { cancelled = true }
     }, [name])
 
     if (loading) return (
@@ -123,9 +116,13 @@ export default function ItemDetailPage() {
         <div style={{ textAlign: 'center', padding: '5rem 1rem', color: '#6b7280' }}>
             <p style={{ fontSize: '3rem' }}>😔</p>
             <p style={{ fontSize: '1.1rem', marginBottom: '1.5rem' }}>Item "{name}" not found</p>
-            <button onClick={() => navigate('/items')} style={{ backgroundColor: DEX.red, color: 'white', border: 'none', borderRadius: '0.75rem', padding: '0.6rem 1.5rem', cursor: 'pointer', fontWeight: 'bold' }}>
-                ← Back to Items
-            </button>
+            <button onClick={() => navigate(-1)} style={{
+                backgroundColor: 'rgba(0,0,0,0.4)', border: '2px solid rgba(255,255,255,0.15)',
+                color: 'rgba(255,255,255,0.7)', borderRadius: '0.75rem',
+                padding: '0.45rem 1rem', cursor: 'pointer', fontWeight: '600',
+                fontSize: '0.85rem', marginTop: '1rem', display: 'inline-flex',
+                alignItems: 'center', gap: '0.4rem',
+            }}>← Back to Items</button>
         </div>
     )
 
@@ -136,7 +133,7 @@ export default function ItemDetailPage() {
 
             {/* Back link */}
             <button
-                onClick={() => navigate('/items')}
+                onClick={() => navigate(-1)}
                 style={{
                     backgroundColor: 'rgba(0,0,0,0.4)', border: '2px solid rgba(255,255,255,0.15)',
                     color: 'rgba(255,255,255,0.7)', borderRadius: '0.75rem',
